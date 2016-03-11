@@ -1,0 +1,81 @@
+<latex>
+\documentclass{scrartcl}
+%\documentclass[a4paper]{article}
+%\usepackage{mathpazo,helvet}
+\usepackage[T1]{fontenc}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsrefs}
+\usepackage{subfig}
+\usepackage{funkey}
+\usepackage{notation}
+\usepackage{array}
+\usepackage{menukeys}
+\usepackage{hyperref}
+\input{tikzstyles}
+
+\begin{document}
+
+\title{Getting started with MaMuT}
+\author{Jean-Yves Tinevez & Tobias Pietzsch}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+%\newcommand\menu[1]{\textit{#1}}
+\newcommand\button[1]{\textit{#1}}
+\newcommand\key[1]{\texttt{#1}}
+\newcommand\screenshotA[2]{\centerline{\includegraphics[width=#2cm]{figures/#1}}}
+\newcommand\screenshotB[1]{\centerline{\includegraphics[width=.8\textwidth]{figures/#1}}}
+\newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
+\newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+</latex>
+<wiki>
+__TOC__
+</wiki>
+
+
+This tutorial aims at getting you started with <wiki>[[MaMuT]]</wiki><latex>\cite{MaMuT}</latex>. We cover data preparation, and basic annotation process.
+
+
+\section{Installation}
+%————————————————————-
+
+Well, thanks to the ImageJ <wiki>[[Updater]]</wiki><latex>\cite{Updater}</latex>, there is not much to do. Simply follow <wiki>[[How_to_follow_a_3rd_party_update_site|these instructions]]</wiki><latex>\cite{Follow3rdPartySite}</latex>, and subscribe to the MaMuT update site.  
+
+\screenshotA{MaMuT_UpdateSite.png}
+
+\section{Data preparation}
+%————————————————————————-
+
+MaMuT relies and exploit the file format of the <wiki>[[BigDataViewer]]</wiki><latex>\cite{BDV}</latex>. You need to prepare your images so that can be opened in the BDV and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the BDV, specializing in cell lineaging. 
+
+If you already have such a file, skip to the next section. Otherwise, we lazily rely on the excellent BDV documentation and point directly to the BDV instructions to prepare your images, depending on whether
+\begin{itemize}
+	\item they are <wiki>[[BigDataViewer#Exporting_from_ImageJ_Stacks|opened as an ImageJ stack]]</wiki><latex>\cite{BDB_from_ImageJ}</latex>;
+	\item they come from a <wiki>[[BigDataViewer#Integration_with_Fiji's_SPIMage_Processing_Tools|SPIM processing pipeline|right]]</wiki><latex>\cite{BDV_SPIM_pipeline}</latex>.
+\end{itemize}
+
+\section{Opening a dataset in MaMuT}
+%——————————————————————————————————-
+
+We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \emph{.xml} file and a possibly very large \emph{.h5} file on your computer.
+
+Start MaMuT on this dataset by browsing to  \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
+
+\screenshotA{MaMuT_MenuItems.png}
+
+A file explorer window opens. Browse to the \emph{.xml} file of the BDV file pair. After a little while, the MaMuT main GUI window opens:
+
+\screenshotA{MaMuT_MainGUIWindow_beginning.png}
+
+If you get this, so far so good. 
+
+
+
+<latex>
+\end{document}
+</latex>
+% vim::set expandtab tabstop=4 softtabstop=2 shiftwidth=2 ft=tex:
