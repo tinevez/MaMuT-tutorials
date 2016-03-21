@@ -14,20 +14,14 @@
 \usepackage{menukeys}
 \usepackage{hyperref}
 \input{tikzstyles}
-
+\usepackage[sc]{mathpazo}
+\linespread{1.05}  
 \begin{document}
-
-\title{Getting started with MaMuT}
-\author{Jean-Yves Tinevez & Tobias Pietzsch}
-\maketitle
-\newpage
-\tableofcontents
-\newpage
 
 %\newcommand\menu[1]{\textit{#1}}
 \newcommand\button[1]{\textit{#1}}
 \newcommand\key[1]{\texttt{#1}}
-\newcommand\screenshotA[2]{\centerline{\includegraphics[width=#2cm]{figures/#1}}}
+\newcommand\screenshotA[1]{\centerline{\includegraphics[scale=0.5]{figures/#1}}}
 \newcommand\screenshotB[1]{\centerline{\includegraphics[width=.8\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
