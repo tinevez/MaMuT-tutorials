@@ -36,14 +36,14 @@ __TOC__
 This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
 
 
-\section{Installation}
+\section{Installation.}
 %————————————————————-
 
 Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater}}, there is not much to do. Simply follow the instructions on how to \href{http://imagej.net/How_to_follow_a_3rd_party_update_site}{\coloredlink{follow a 3rd party site}}, and subscribe to the MaMuT update site.  
 
 \screenshotA{MaMuT_UpdateSite.png}
 
-\section{Data preparation}
+\section{Data preparation.}
 %————————————————————————-
 
 MaMuT relies and exploit the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that can be opened in the BDV and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the BDV, specializing in cell lineaging. 
@@ -54,7 +54,7 @@ If you already have such a file, skip to the next section. Otherwise, we lazily 
 	\item they come from a \href{http://imagej.net/BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{\coloredlink{SPIM processing pipeline}}.
 \end{itemize}
 
-\section{Opening a dataset in MaMuT}
+\section{Opening a dataset in MaMuT.}
 %——————————————————————————————————-
 
 We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \emph{.xml} file and a possibly very large \emph{.h5} file on your computer.
@@ -67,7 +67,44 @@ A file explorer window opens. Browse to the \emph{.xml} file of the BDV file pai
 
 \screenshotA{MaMuT_MainGUIWindow_beginning.png}
 
-If you get this, so far so good. 
+If you get this, so far so good. This is the main window of the GUI. It is split in 3 tabs but we will just focus on the first one for now. It controls the display of the data,
+both for the image and for the annotations. It also used to launch Views of the data.
+
+MaMuT offers three kind of views:
+\begin{itemize}
+  \item \textbf{Mamut Viewer} is the main view that overlays the image data and 
+  the annotations using the physical coordinate system. This is where you will
+  mainly interact with the data, and create, edit and move spots around. This
+  view is based on the \bdv.
+  \item \textbf{TrackScheme} is the track browser, taken from TrackMate. It only
+  shows the annotation data in a hierarchical way, discarding any physical location
+  information. Tracks are laid out along time ranging from top to bottom, and 
+  arranged from left to right according to their name. This view is useful to make
+  sense of the annotation data, as well as to edit links between spots.
+  \item \textbf{3D Viewer} shows a 3D View of the annotation data in the physical
+  coordinate system, without the image data. It is based on the \href{http://imagej.net/3D_Viewer}{\coloredlink{ImageJ 3D Viewer}}. 
+\end{itemize}
+
+
+\section{The MaMuT Viewer.}
+%——————————————————————————
+
+Let's start with the MaMuT Viewer. Click on its button on the GUI, the one with a
+picture of a mammoth. A \bdv window should appear. 
+
+It is really a \bdv window, so if you are familiar with this plugin, everything you
+know applies there. If are not, here is a recapitulation of how the \bdv works and 
+how to interact with it.
+
+The \bdv was made to deal with very large images of a sample possibly acquired in several 
+views (\eg rotating the sample in a SPIM). The image data is not fully loaded in memory.
+It is cached efficiently following the caching strategy of the \bdv (detailed 
+\href{http://imagej.net/BigDataViewer#About_the_BigDataViewer_data_format}
+{\coloredlink{here)}).
+
+You can browse the data using the mouse and the keyboard. The key bindings can be 
+redefined, but here are the default:
+
 
 
 
