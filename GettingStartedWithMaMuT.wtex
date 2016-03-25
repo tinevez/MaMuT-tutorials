@@ -17,9 +17,6 @@
 \usepackage{hyperref}
 \input{tikzstyles}
 
-
-\begin{document}
-
 %\newcommand\menu[1]{\textit{#1}}
 \newcommand\button[1]{\textit{#1}}
 \newcommand\key[1]{\texttt{#1}}
@@ -27,6 +24,14 @@
 \newcommand\screenshotB[1]{\centerline{\includegraphics[width=.8\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+
+\title{Getting started with MaMuT.}
+\author{Tobias Pietzsch & Jean-Yves Tinevez}
+
+\begin{document}
+
+\maketitle
+
 </latex>
 <wiki>
 __TOC__
@@ -36,28 +41,28 @@ __TOC__
 This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
 
 
-\section{Installation}
+\section{Installation.}
 %————————————————————-
 
 Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater}}, there is not much to do. Simply follow the instructions on how to \href{http://imagej.net/How_to_follow_a_3rd_party_update_site}{\coloredlink{follow a 3rd party site}}, and subscribe to the MaMuT update site.  
 
 \screenshotA{MaMuT_UpdateSite.png}
 
-\section{Data preparation}
+\section{Data preparation.}
 %————————————————————————-
 
-MaMuT relies and exploit the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that can be opened in the BDV and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the BDV, specializing in cell lineaging. 
+MaMuT relies and exploit the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
 
-If you already have such a file, skip to the next section. Otherwise, we lazily rely on the excellent BDV documentation and point directly to the BDV instructions to prepare your images, depending on whether
+If you already have such a file, skip to the next section. Otherwise, we lazily rely on the excellent \bdv documentation and point directly to the \bdv instructions to prepare your images, depending on whether
 \begin{itemize}
 	\item they are \href{http://imagej.net/BigDataViewer#Exporting_from_ImageJ_Stacks}{\coloredlink{opened as an ImageJ stack}};
 	\item they come from a \href{http://imagej.net/BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{\coloredlink{SPIM processing pipeline}}.
 \end{itemize}
 
-\section{Opening a dataset in MaMuT}
+\section{Opening a dataset in MaMuT.}
 %——————————————————————————————————-
 
-We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \emph{.xml} file and a possibly very large \emph{.h5} file on your computer.
+We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \emph{.xml} file and a possibly very large \emph{.h5} file on your computer. If you did not and want to rely on an example dataset for this tutorial, download it here: TODO
 
 Start MaMuT on this dataset by browsing to \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
 
@@ -68,6 +73,13 @@ A file explorer window opens. Browse to the \emph{.xml} file of the BDV file pai
 \screenshotA{MaMuT_MainGUIWindow_beginning.png}
 
 If you get this, so far so good. 
+
+The GUI window you see here is made of several tabs. The first one controls how the data (image and annotation) are displayed. TrackMate user will notice this tab resembles the last one of the TrackMate GUI. This is not a surprise: MaMuT is a plugin that relies on the \bdv for large image visualisation, and on TrackMate for annotation. 
+
+Right now, click on the \texttt{Mamut Viewer} button with the mammoth logo. A new window should appear, with the image data displayed in it. This window is actually a normal \bdv window. We changed a few things (detailed below) to make it compatible with lineage annotation, but if you are familiar with \bdv already, what you know about it applies here.
+
+Briefly: this window is where the image data is displayed (efficiently) and explored.  To navigate it, use the mouse and keyboard with the following default bindings:
+
 
 
 
