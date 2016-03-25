@@ -22,14 +22,39 @@
 \newcommand\key[1]{\texttt{#1}}
 \newcommand\screenshotA[1]{\centerline{\includegraphics[scale=0.5]{figures/#1}}}
 \newcommand\screenshotB[1]{\centerline{\includegraphics[width=.8\textwidth]{figures/#1}}}
+\newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+
+% Small font in verbatime environment.
+\makeatletter
+\def\verbatim{\scriptsize\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+\makeatother
+
+% Small images in text (for e.g. small icon).
+\newcommand*{\smallimg}[1]{%
+  \raisebox{-.3\baselineskip}{%
+    \includegraphics[
+      height=\baselineskip,
+      width=\baselineskip,
+      keepaspectratio,
+    ]{figures/#1}%
+  }%
+}
+
+% Less space when we make bullet lists.
+\newenvironment{myitemize}
+{ \begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}     }
+{ \end{itemize}                  } 
+
 
 \title{Getting started with MaMuT.}
 \author{Tobias Pietzsch & Jean-Yves Tinevez}
 
 \begin{document}
-
 \maketitle
 
 </latex>
@@ -41,12 +66,15 @@ __TOC__
 This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
 
 
+
 \section{Installation.}
 %————————————————————-
 
 Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater}}, there is not much to do. Simply follow the instructions on how to \href{http://imagej.net/How_to_follow_a_3rd_party_update_site}{\coloredlink{follow a 3rd party site}}, and subscribe to the MaMuT update site.  
 
 \screenshotA{MaMuT_UpdateSite.png}
+
+
 
 \section{Data preparation.}
 %————————————————————————-
@@ -59,16 +87,29 @@ If you already have such a file, skip to the next section. Otherwise, we lazily 
 	\item they come from a \href{http://imagej.net/BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{\coloredlink{SPIM processing pipeline}}.
 \end{itemize}
 
+
+
 \section{Opening a dataset in MaMuT.}
 %——————————————————————————————————-
 
-We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \emph{.xml} file and a possibly very large \emph{.h5} file on your computer. If you did not and want to rely on an example dataset for this tutorial, download it here: TODO
+We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. If you did not and want to rely on an example dataset for this tutorial, download it here: \coloredlink{TODO}. In the following, we assume that you are using this data.
 
 Start MaMuT on this dataset by browsing to \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
 
 \screenshotA{MaMuT_MenuItems.png}
 
-A file explorer window opens. Browse to the \emph{.xml} file of the BDV file pair. After a little while, the MaMuT main GUI window opens:
+A file explorer window opens. Browse to the \texttt{.xml} file of the BDV file pair. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<SpimData version="0.2">
+  <BasePath type="relative">.</BasePath>
+  <SequenceDescription>
+    <ImageLoader format="bdv.hdf5">
+      <hdf5 type="relative">MaMuT_Parhyale_demo.h5</hdf5>
+...
+\end{verbatim}
+
+After a little while, the MaMuT main GUI window opens:
 
 \screenshotA{MaMuT_MainGUIWindow_beginning.png}
 
@@ -77,16 +118,16 @@ both for the image and for the annotations. It also used to launch Views of the 
 
 MaMuT offers three kind of views:
 \begin{itemize}
-  \item \textbf{Mamut Viewer} is the main view that overlays the image data and 
+  \item \smallimg{mammouth-32x32.png} \textbf{Mamut Viewer} is the main view that overlays the image data and 
   the annotations using the physical coordinate system. This is where you will
   mainly interact with the data, and create, edit and move spots around. This
   view is based on the \bdv.
-  \item \textbf{TrackScheme} is the track browser, taken from TrackMate. It only
+  \item \smallimg{Icon3a_print_transparency.png} \textbf{TrackScheme} is the track browser, taken from TrackMate. It only
   shows the annotation data in a hierarchical way, discarding any physical location
   information. Tracks are laid out along time ranging from top to bottom, and 
   arranged from left to right according to their name. This view is useful to make
   sense of the annotation data, as well as to edit links between spots.
-  \item \textbf{3D Viewer} shows a 3D View of the annotation data in the physical
+  \item \smallimg{sport_8ball.png} \textbf{3D Viewer} shows a 3D View of the annotation data in the physical
   coordinate system, without the image data. It is based on the \href{http://imagej.net/3D_Viewer}{\coloredlink{ImageJ 3D Viewer}}. 
 \end{itemize}
 
@@ -95,7 +136,9 @@ MaMuT offers three kind of views:
 %——————————————————————————
 
 Let's start with the MaMuT Viewer. Click on its button on the GUI, the one with a
-picture of a mammoth. A \bdv window should appear. 
+picture of a mammoth \smallimg{mammouth-32x32.png}. A \bdv window should appear. 
+
+\screenshotC{MaMuT_ViewerExample.png}
 
 It is really a \bdv window, so if you are familiar with this plugin, everything you
 know applies there. If are not, here is a recapitulation of how the \bdv works and 
@@ -105,19 +148,51 @@ The \bdv was made to deal with very large images of a sample possibly acquired i
 views (\eg rotating the sample in a SPIM). The image data is not fully loaded in memory.
 It is cached efficiently following the caching strategy of the \bdv (detailed 
 \href{http://imagej.net/BigDataViewer#About_the_BigDataViewer_data_format}
-{\coloredlink{here)}).
+{\coloredlink{here}}).
 
-You can browse the data using the mouse and the keyboard. The key bindings can be 
-redefined, but here are the default:
+The data we use for this tutorial is an excerpt from a long term time-lapse experiment done with a Zeiss LightSheet Z1, filming the development of a shrimp (\textit{Parhyale hawaiensis}) over several days. We have here the first 10 time-points, spreading over a bit more than 1 hour.  Three views were acquired:
+\begin{myitemize}
+	\item Angle 325 is the ventral-right view.
+	\item Angle 280 is the ventral view.
+	\item Angle 235 is the ventral-left view.
+	\item Angle 0, which is the first one in MaMuT, is the fused volume from all 3 input views after spatiotemporal registration and multi-view deconvolution. 
+\end{myitemize}
+
+You can navigate through the data using the mouse and the keyboard. The key bindings can be redefined, but here are the default:
+Switching from one view to another is done with the numeric keys \keys{1} ... \keys{0} for up to 10 views. Pressing \keys{F} switches to the fused mode, where all views are overlaid. You can add and remove views from the fused view by pressing \keys{Shift+1} - \etc. The color and brightness of each view are defined in the \texttt{brightness and color} panel, brought by pressing the \keys{S} key.
+
+\screenshotB{MaMuT_ViewerBrightnessColor.png}
+On this screenshot, we used the fused mode, toggle the first and third views off (the deconvolved view and the angle 280), and looked at the data in a XZ plane.
+
+The MaMuT viewer also overlays some useful information:
+
+\screenshotA{MaMuT_ViewerOverlays.png}
 
 
-The GUI window you see here is made of several tabs. The first one controls how the data (image and annotation) are displayed. TrackMate user will notice this tab resembles the last one of the TrackMate GUI. This is not a surprise: MaMuT is a plugin that relies on the \bdv for large image visualisation, and on TrackMate for annotation. 
+\textbf{For the mouse:}
+\begin{myitemize}
+	\item \keys{Left drag}: Rotate (pan and tilt) around the point where the mouse was clicked.
+	\item \keys{Right-drag} or \keys{Middle-drag}: Move in the xy-plane.
+	\item \keys{Scroll} Move along the z-axis.
+	\item \keys{Meta-Scroll} or \keys{Ctrl-Shift-Scroll} Zoom in and out.
+\end{myitemize}
 
-Right now, click on the \texttt{Mamut Viewer} button with the mammoth logo. A new window should appear, with the image data displayed in it. This window is actually a normal \bdv window. We changed a few things (detailed below) to make it compatible with lineage annotation, but if you are familiar with \bdv already, what you know about it applies here.
+\textbf{For the keyboard:}
+\begin{myitemize}
+	\item \keys{X} / \keys{Y} / \keys{Z}: Select rotation axis.
+	\item \keys{\textleftarrow} / \keys{\textrightarrow}: Rotate clockwise / counter-clockwise around the choosen rotation axis.
+	\item \keys{\textuparrow} / \keys{\textdownarrow}: Zoom in / out.
+	\item \keys{,} / \keys{.} Move forward / backward along the z-axis.
+	\item \keys{Shift+X}: Rotate to the ZY-plane of the current source (look along the x-axis of the current source).
+	\item \keys{Shift+Y} or \keys{Shift+C}: Rotate to the XZ-plane of the current source (look along the y-axis of the current source).
+	\item \keys{Shift+Z}: Rotate to the XY-plane of the current source (look along the z-axis of the current source).
+	\item \keys{N}: Move to the previous timepoint.
+	\item \keys{M}: Move to the next timepoint.
+	\item \keys{[}: Jump to the previous time step.
+	\item \keys{]}: Jump to the next time step.
+\end{myitemize}
 
-Briefly: this window is where the image data is displayed (efficiently) and explored.  To navigate it, use the mouse and keyboard with the following default bindings:
-
-
+MaMuT can deal with multi-view images; it is even made for this very purpose as its name implies. The demo dataset we are plying with is made of four views. 
 
 
 <latex>
