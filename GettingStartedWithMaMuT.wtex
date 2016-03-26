@@ -5,17 +5,26 @@
 \usepackage[libertine]{newtxmath}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{amsrefs}
-\usepackage{subfig}
 \usepackage{funkey}
 \usepackage{notation}
 \usepackage{array}
 \usepackage{menukeys}
 \usepackage{hyperref}
 \input{tikzstyles}
+\usepackage{subfig}
+
+% Put a dot after section number.
+\usepackage{secdot}
+
+% I want a proper degree symbol in text.
+\usepackage{textcomp}       % additional symbols using companion encoding TS1
+\usepackage{gensymb}        % provides macro \degree which works in text and math
+\DeclareUnicodeCharacter{00B0}{\degree}
 
 %\newcommand\menu[1]{\textit{#1}}
 \newcommand\button[1]{\textit{#1}}
@@ -145,54 +154,67 @@ know applies there. If are not, here is a recapitulation of how the \bdv works a
 how to interact with it.
 
 The \bdv was made to deal with very large images of a sample possibly acquired in several 
-views (\eg rotating the sample in a SPIM). The image data is not fully loaded in memory.
-It is cached efficiently following the caching strategy of the \bdv (detailed 
+views (\eg rotating the sample in a SPIM), that we call \emph{sources} here. The image data is not fully loaded in memory. It is cached efficiently following the caching strategy of the \bdv (detailed 
 \href{http://imagej.net/BigDataViewer#About_the_BigDataViewer_data_format}
 {\coloredlink{here}}).
 
-The data we use for this tutorial is an excerpt from a long term time-lapse experiment done with a Zeiss LightSheet Z1, filming the development of a shrimp (\textit{Parhyale hawaiensis}) over several days. We have here the first 10 time-points, spreading over a bit more than 1 hour.  Three views were acquired:
+The dataset we use for this tutorial is an excerpt from a long term time-lapse experiment done with a Zeiss LightSheet Z1, filming the development of a shrimp (\textit{Parhyale hawaiensis}) over several days. We have here the first 10 time-points, spreading over a bit more than 1 hour.  Three views were acquired that generated a source each:
 \begin{myitemize}
-	\item Angle 325 is the ventral-right view.
-	\item Angle 280 is the ventral view.
-	\item Angle 235 is the ventral-left view.
-	\item Angle 0, which is the first one in MaMuT, is the fused volume from all 3 input views after spatiotemporal registration and multi-view deconvolution. 
+	\item Angle 325° is the ventral-right view.
+	\item Angle 280° is the ventral view.
+	\item Angle 235° is the ventral-left view.
+	\item Angle 0°, which is the first one in MaMuT, is the fused volume from all 3 input sources after spatiotemporal registration and multi-view deconvolution. 
 \end{myitemize}
 
 You can navigate through the data using the mouse and the keyboard. The key bindings can be redefined, but here are the default:
-Switching from one view to another is done with the numeric keys \keys{1} ... \keys{0} for up to 10 views. Pressing \keys{F} switches to the fused mode, where all views are overlaid. You can add and remove views from the fused view by pressing \keys{Shift+1} - \etc. The color and brightness of each view are defined in the \texttt{brightness and color} panel, brought by pressing the \keys{S} key.
+Switching from one source to another is done with the numeric keys \keys{1} ... \keys{0} for up to 10 views. Pressing \keys{F} switches to the fused mode, where all sources are overlaid. You can add and remove sources from the fused view by pressing \keys{Shift+1} - \etc. The color and brightness of each source are defined in the \texttt{brightness and color} panel, brought by pressing the \keys{S} key.
 
 \screenshotB{MaMuT_ViewerBrightnessColor.png}
-On this screenshot, we used the fused mode, toggle the first and third views off (the deconvolved view and the angle 280), and looked at the data in a XZ plane.
+On this screenshot, we used the fused mode, toggle the first and third sources off (the deconvolved source and the angle 280°), and looked at the data in a XZ plane.
 
 The MaMuT viewer also overlays some useful information:
 
-\screenshotA{MaMuT_ViewerOverlays.png}
+\screenshotB{MaMuT_ViewerOverlays.pdf}
 
+Navigating through the data in space and time uses the mouse and keyboard in a standard way: 
 
-\textbf{For the mouse:}
+\textbf{To pan and zoom:}
 \begin{myitemize}
-	\item \keys{Left drag}: Rotate (pan and tilt) around the point where the mouse was clicked.
-	\item \keys{Right-drag} or \keys{Middle-drag}: Move in the xy-plane.
-	\item \keys{Scroll} Move along the z-axis.
-	\item \keys{Meta-Scroll} or \keys{Ctrl-Shift-Scroll} Zoom in and out.
+	\item \keys{Right-drag} or \keys{Middle-drag}: Move in the XY-plane of the view.
+	\item \keys{Mousewheel} Move along the Z-axis of the view. Press \keys{Shift} or \keys{Control} to change the speed.
+	\item \keys{Alt-Mousewheel} (Mac and Linux) or \keys{Ctrl-Shift-Mousewheel} (Windows) Zoom in and out.
+	\item \keys{\textuparrow} / \keys{\textdownarrow} Zoom in / out. With \keys{Shift}: fast zoom. With \keys{Control}: slow zoom.
 \end{myitemize}
 
-\textbf{For the keyboard:}
+\textbf{To orient, rotate the view:}
 \begin{myitemize}
-	\item \keys{X} / \keys{Y} / \keys{Z}: Select rotation axis.
-	\item \keys{\textleftarrow} / \keys{\textrightarrow}: Rotate clockwise / counter-clockwise around the choosen rotation axis.
-	\item \keys{\textuparrow} / \keys{\textdownarrow}: Zoom in / out.
+	\item \keys{Left drag} Rotate (pan and tilt) around the point where the mouse was clicked.
+	\item \keys{X} / \keys{Y} / \keys{Z} Select rotation axis.
+	\item \keys{\textleftarrow} / \keys{\textrightarrow} Rotate clockwise / counter-clockwise around the choosen rotation axis.
 	\item \keys{,} / \keys{.} Move forward / backward along the z-axis.
-	\item \keys{Shift+X}: Rotate to the ZY-plane of the current source (look along the x-axis of the current source).
+	\item \keys{Shift+X} Rotate to the ZY-plane of the current source (look along the x-axis of the current source).
 	\item \keys{Shift+Y} or \keys{Shift+C}: Rotate to the XZ-plane of the current source (look along the y-axis of the current source).
-	\item \keys{Shift+Z}: Rotate to the XY-plane of the current source (look along the z-axis of the current source).
-	\item \keys{N}: Move to the previous timepoint.
-	\item \keys{M}: Move to the next timepoint.
-	\item \keys{[}: Jump to the previous time step.
-	\item \keys{]}: Jump to the next time step.
+	\item \keys{Shift+Z} Rotate to the XY-plane of the current source (look along the z-axis of the current source).
 \end{myitemize}
 
-MaMuT can deal with multi-view images; it is even made for this very purpose as its name implies. The demo dataset we are plying with is made of four views. 
+\textbf{To navigate in time:}
+\begin{myitemize}
+	\item \keys{N} Move to the previous timepoint.
+	\item \keys{M} Move to the next timepoint.
+	\item \keys{[} Jump to the previous time step.
+	\item \keys{]} Jump to the next time step.
+\end{myitemize}
+
+
+
+\section{Annotating cells.}
+%----------------------------
+
+Using these commands, try to move the view around so that these cells are in sight.
+
+\screenshotA{MaMuT_DesiredOrientation.png}
+
+To do so, select the first source (angle 0°) and move the view in its XY place (press \keys{Shift+Z}). Then move in Z to the top of the embryo (around Z=1800) and finally zoom to bring about 50 cells in view. If you move in time, you can see that a lot of cell divisions are happening there. We will now build their lineage.
 
 
 <latex>
