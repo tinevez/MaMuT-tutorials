@@ -88,7 +88,7 @@ Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater
 \section{Data preparation.}
 %————————————————————————-
 
-MaMuT relies and exploit the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
+MaMuT relies on and exploit the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
 
 If you already have such a file, skip to the next section. Otherwise, we lazily rely on the excellent \bdv documentation and point directly to the \bdv instructions to prepare your images, depending on whether
 \begin{itemize}
@@ -101,13 +101,7 @@ If you already have such a file, skip to the next section. Otherwise, we lazily 
 \section{Opening a dataset in MaMuT.}
 %——————————————————————————————————-
 
-We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. If you did not and want to rely on an example dataset for this tutorial, download it here: \coloredlink{TODO}. In the following, we assume that you are using this data.
-
-Start MaMuT on this dataset by browsing to \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
-
-\screenshotA{MaMuT_MenuItems.png}
-
-A file explorer window opens. Browse to the \texttt{.xml} file of the BDV file pair. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
+We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8"?>
 <SpimData version="0.2">
@@ -118,7 +112,13 @@ A file explorer window opens. Browse to the \texttt{.xml} file of the BDV file p
 ...
 \end{verbatim}
 
-After a little while, the MaMuT main GUI window opens:
+If you did not and want to rely on an example dataset for this tutorial, download it here: \coloredlink{TODO}. In the following, we assume that you are using this data.
+
+Start MaMuT on this dataset by browsing to \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
+
+\screenshotA{MaMuT_MenuItems.png}
+
+A file explorer window opens. Browse to the \texttt{.xml} file of the BDV file pair. After a little while, the MaMuT main GUI window opens:
 
 \screenshotA{MaMuT_MainGUIWindow_beginning.png}
 
@@ -141,6 +141,7 @@ MaMuT offers three kind of views:
 \end{itemize}
 
 
+
 \section{The MaMuT Viewer.}
 %——————————————————————————
 
@@ -149,12 +150,11 @@ picture of a mammoth \smallimg{mammouth-32x32.png}. A \bdv window should appear.
 
 \screenshotC{MaMuT_ViewerExample.png}
 
-It is really a \bdv window, so if you are familiar with this plugin, everything you
-know applies there. If are not, here is a recapitulation of how the \bdv works and 
-how to interact with it.
+The MaMuT viewer is really a \bdv window, so if you are familiar with this plugin, everything you know applies there. If are not, here is a recapitulation of how the \bdv works and how to interact with it.
 
-The \bdv was made to deal with very large images of a sample possibly acquired in several 
-views (\eg rotating the sample in a SPIM), that we call \emph{sources} here. The image data is not fully loaded in memory. It is cached efficiently following the caching strategy of the \bdv (detailed 
+A little word on the \bdv: The \bdv was made to deal with very large images of a sample possibly acquired from several different orientations (\eg rotating the sample in a SPIM). These different orientations (or views, but here we use this word for anothor notion) of the data amount to a new dimension. This dimension if more complex to handle than \eg multiple channels, because changing the acquisition orientation generates a data block which is not aligned with the other blocks (rotated, translated, and if you change the magnification, scaled), and does not have necessary the same size. As of today, only a limited numbers of image viewers can deal with multiple orientations, and the \bdv is one of them.
+
+Each of these orientations generate a data block, that we call \emph{source} here. A source is monochromatic: if several fluorescence channels are captured under a single orientation, they each generate a source. The image data is not fully loaded in memory. It is cached efficiently following the caching strategy of the \bdv (detailed 
 \href{http://imagej.net/BigDataViewer#About_the_BigDataViewer_data_format}
 {\coloredlink{here}}).
 
@@ -180,7 +180,7 @@ Navigating through the data in space and time uses the mouse and keyboard in a s
 
 \textbf{To pan and zoom:}
 \begin{myitemize}
-	\item \keys{Right-drag} or \keys{Middle-drag}: Move in the XY-plane of the view.
+	\item \keys{Right Drag} or \keys{Middle Drag}: Move in the XY-plane of the view.
 	\item \keys{Mousewheel} Move along the Z-axis of the view. Press \keys{Shift} or \keys{Control} to change the speed.
 	\item \keys{Alt-Mousewheel} (Mac and Linux) or \keys{Ctrl-Shift-Mousewheel} (Windows) Zoom in and out.
 	\item \keys{\textuparrow} / \keys{\textdownarrow} Zoom in / out. With \keys{Shift}: fast zoom. With \keys{Control}: slow zoom.
@@ -188,7 +188,7 @@ Navigating through the data in space and time uses the mouse and keyboard in a s
 
 \textbf{To orient, rotate the view:}
 \begin{myitemize}
-	\item \keys{Left drag} Rotate (pan and tilt) around the point where the mouse was clicked.
+	\item \keys{Left Drag} Rotate around the point where the mouse was clicked.
 	\item \keys{X} / \keys{Y} / \keys{Z} Select rotation axis.
 	\item \keys{\textleftarrow} / \keys{\textrightarrow} Rotate clockwise / counter-clockwise around the choosen rotation axis.
 	\item \keys{,} / \keys{.} Move forward / backward along the z-axis.
@@ -216,6 +216,33 @@ Using these commands, try to move the view around so that these cells are in sig
 
 To do so, select the first source (angle 0°) and move the view in its XY place (press \keys{Shift+Z}). Then move in Z to the top of the embryo (around Z=1800) and finally zoom to bring about 50 cells in view. If you move in time, you can see that a lot of cell divisions are happening there. We will now build their lineage.
 
+Move the mouse pointer over the cell you want to annotation, and press \keys{A}. A magenta cirle should appear, representing a cell or more generally, a spot. Spots are created, edited and removed using the following default key bindings:
+
+\begin{myitemize}
+	\item \keys{A} to add a spot at the mouse location.
+	\item \keys{D} to delete the spot under the mouse location.
+	\item \keys{Q} / \keys{E} to decrease / increase the spot radius. Use \keys{Shift} / \keys{Control} to change the radius by a greater / smaller amount.
+	\keys{Space} is used to move a spot in the XY view plane: put the mouse pointer inside the spot you want to move, then press and hold space while moving the mouse. The spot will follow your mouse until you release the \keys{Space} key.
+\end{myitemize}
+
+Spots represents point of interest (in our case, cells) under the shape of a sphere. You can change the sphere time-point, location and radius, but that's it. There is no object contour in MaMuT. Spots are drawn as cicles in the MaMuT viewer, with the radius of their intersection with the view XY plane. If they are not intersecting with the view plane, they are drawn as small dots, as you can see by moving along Z a bit.
+
+Accurately placing a spot in 3D can be difficult. This is where using multiple views in MaMut can help. On the main GUI window, click on the \smallimg{mammouth-32x32.png} \textbf{Mamut Viewer} button again to open a new view. This new view might not be showing the spot you just added. Fortunately, all views cam be brought in sync by clicking inside a spot.
+
+In the first view, click on the spot you added. The second view is translated so that this very spot is brought at the center of the view window. Rotate around this point so as to show the YZ plane of the source (press \keys{Shift+X}) and zoom close to the spot, to have a view pair resembling this:
+
+\screenshotA{MaMuT_MultipleViews.png}
+
+Just to ensure we are looking at the same spot in the two views, we checked the \textbf{Display spots names} button in the main GUI. Use the \keys{Space} key to move the spot around in a plane until you are happy with its location. This view combination is useful to place properly spots in 3D. You can open as many views as you want. Other views can be used \eg to have an overview of the data using a dezoomed view.
+
+Spots can also be created with a double-click of the mouse. So if we recapitulate:
+\begin{myitemize}
+	\item \keys{Left Click} inside a spot to select it and center all views at this spot.
+	\item \keys{Double Left Click} outside any spot to create a new one at the mouse location.
+\end{myitemize}
+
+
+\screenshotB{MaMuT_ConfigureSpotDisplay.pdf}
 
 <latex>
 \end{document}
