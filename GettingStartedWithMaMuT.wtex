@@ -212,13 +212,17 @@ Navigating through the data in space and time uses the mouse and keyboard in a s
 \section{Annotating cells.}
 %----------------------------
 
+
+\subsection{Creating spots.}
+%---------------------------
+
 Using these commands, try to move the view around so that these cells are in sight.
 
 \screenshotA{MaMuT_DesiredOrientation.png}
 
 To do so, select the first source (angle 0°) and move the view in its XY place (press \keys{Shift+Z}). Then move in Z to the top of the embryo (around Z=1800) and finally zoom to bring about 50 cells in view. If you move in time, you can see that a lot of cell divisions are happening there. We will now build their lineage.
 
-Move the mouse pointer over the cell you want to annotation, and press \keys{A}. A magenta cirle should appear, representing a cell or more generally, a spot. Spots are created, edited and removed using the following default key bindings:
+Move the mouse pointer over the cell you want to annotation, and press \keys{A}. A magenta circle should appear, representing a cell or more generally, a spot. Spots are created, edited and removed using the following default key bindings:
 
 \begin{myitemize}
 	\item \keys{A} to add a spot at the mouse location.
@@ -228,6 +232,10 @@ Move the mouse pointer over the cell you want to annotation, and press \keys{A}.
 \end{myitemize}
 
 Spots represents point of interest (in our case, cells) under the shape of a sphere. You can change the sphere time-point, location and radius, but that's it. There is no object contour in MaMuT. Spots are drawn as circles in the MaMuT viewer, with the radius of their intersection with the view XY plane. If they are not intersecting with the view plane, they are drawn as small dots, as you can see by moving along Z a bit.
+
+
+\subsection{Using multiple viewers to position spots.}
+%-----------------------------------------------------
 
 Accurately placing a spot in 3D can be difficult. This is where using multiple views in MaMut can help. On the main GUI window, click on the \smallimg{mammouth-32x32.png} \textbf{Mamut Viewer} button again to open a new view. This new view might not be showing the spot you just added. Fortunately, all views can be brought in sync by clicking inside a spot.
 
@@ -242,6 +250,10 @@ Spots can also be created with a double-click of the mouse. So if we recapitulat
 	\item \keys{Left Click} inside a spot to select it and center all views at this spot.
 	\item \keys{Double Left Click} outside any spot to create a new one at the mouse location.
 \end{myitemize}
+
+
+\subsection{Display settings for spots.}
+%---------------------------------------
 
 Now is a good time to talk a little bit on how we control the look of spots on the MaMuT viewer. All the MaMuT are in sync and they share common display settings. It is not possible to separately tune the display of each view. Display settings for spots can be tuned on the main GUI window, in the top part of the \textbf{Views} tab. Here you can toggle the visibility of all spots, make their name appear. The display radius simple change their apparent radius on the MaMuT viewer. This display setting has no impact on subsequent analysis and apart from visibility tidiness, it will have its utility later. 
 
@@ -258,6 +270,10 @@ By default, the range of the color scale is taken from the minimal to the maxima
 \section{Linking cells across time.}
 %-----------------------------------
 
+
+\subsection{The data structure behind MaMuT.}
+%--------------------------------------------
+
 We propagate the identity of a cell over time using several spots in several time-points, connected from one to its successor by \emph{links}. Particle-linking algorithms are algorithms that find automatically what are the right links from one time-point to another given a set of spots spread over several time-points. Of course, the definition of "right" depends on the specificity of the algorithm. Tracking is the process of finding automatically all spots in an 2D+T or 3D+T image, and linking them. MaMuT does not do fully automatic tracking. It is a tool that specializes in manual or semi-automatic tracking, privileging data exploration and manual annotation on very large images. However, we will show in another tutorial how to import the results of automated tracking algorithms in MaMuT, so that they can be verified and curated. Here, we limit ourselves to manual and semi-automatic tracking. 
 
 A link is a directed relationship from a spot, called the source, to another spot, called the target. The source spot is always the predecessor in time, so links always point towards increasing time. All the spots that can be reached from a spot by crossing links form what is called a \emph{track}. In our case, a track represents a single cell lineage. 
@@ -265,6 +281,10 @@ A link is a directed relationship from a spot, called the source, to another spo
 The actual data structure behind the annotations in MaMuT (and TrackMate) is a \emph{simple directed graph}. A graph is a mathematical structure made of vertices (in our case, spots representing cells) connected by edges (in our case, links representing propagation of identify across several time-points). The graph is \emph{simple} because it is forbidden to have more than one link between two spots, and that a link cannot link a spot to itself. It is \emph{directed} because links have a direction, following increasing time. In MaMuT, we added an extra constraint that forbids the existence of a link between two spots belonging to the same time-point, but otherwise this data structure is very standard. 
 
 So a link can be created between any two spots, provided they do not belong to the same time-point. There is no other restriction. For instance, a spot can be the source of several links. If there is two outgoing links from a spot, they may represent a cell division (mother cell linked to its two daughters). Several source spots can be linked to a single common target spot, though the biological meaning of this is less evident. MaMuT does not put constraints on the number of links going from or to a spot. We reasoned that MaMuT is to be used to build generic graph-like annotations, and that the subsequent analysis should be specific to the biological context. For instance, for cell lineaging there should be at most two outgoing links from a source spot, and at most one ingoing link on a target spot.
+
+
+\subsection{Creating and removing links.}
+%----------------------------------------
 
 In the MaMuT Viewer, only spots are selectable with the mouse. To create or remove a link, you have to select exactly two spots. 
 \begin{myitemize}
@@ -276,9 +296,28 @@ In the MaMuT Viewer, only spots are selectable with the mouse. To create or remo
 
 So here are the two new useful bindings for \textbf{editing links}:
 \begin{myitemize}
-	\item \keys{Shift-Left Clik} add and remove spots from the selection.
+	\item \keys{Shift-Left Click} add and remove spots from the selection.
 	\item \keys{L} toggle a link between the two spots of the selection. This does nothing if there is not exactly two spots in the selection. 
 \end{myitemize}
+
+Now go back to your MaMuT session, with the data oriented as aid above, and try to annotate and link the cell that divides between the first and second time-point. The mother cell can be found around X=1095, Y=1020, Z=1820 and t=0. On the image below, we tracked the daughter cell that emerges from the division on the left part of the view.
+
+\screenshotB{MaMuT_DesiredTracking_1.PNG}
+
+Note that when you create a link with this method, after link creating the selection is set to be made of only the last spot added. To create the next link, you just have to add the target spot to the selection, the source spot is already in. But still, after creating links over only 10 time-points, lets recognize that this is probably not the best way to quickly create a lineage. This method is probably best suited to edit an existing annotation.
+
+
+\subsection{The auto-linking mode.}
+%----------------------------------
+
+Press \keys{Shift-L} with a MaMuT viewer window active. A message should appear in the 
+MaMuT viewer that states the auto-linking mode is now on. In this mode, a link is automatically created when you create a new spot between this spot and the last one in the selection. Then the selection is changed to be the last spot added. Using this, you can quickly create lineage by moving forward in time with the keyboard and creating spots by double-clicking or typing \keys{A} on cells.
+
+Try to use the auto-linking mode to create the cell lineage of the dividing cell above, this time following the other daughter cell. Move back to the first time-point, select the mother cell, move to the second time-point (\keys{M}) and add a spot (\keys{A} or \keys{Double Click}) on the cell location. Repeat by following the right daughter cell. You should end up with an annotation that resembles the following:
+
+\screenshotB{MaMuT_DesiredTracking_2.PNG}
+
+
 
 
 
