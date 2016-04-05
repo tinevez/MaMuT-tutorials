@@ -347,9 +347,24 @@ TrackScheme is the second view offered in MaMuT. It can be seen as a lineage vis
 
 In the main MaMuT GUI window, click on the \smallimg{Icon3a_print_transparency.png} \textbf{TrackScheme} button. A new window should appear, with the following content.
 
-TODO TODO
+\screenshotC{MaMuT_TrackSchemeStart.png}
 
-In TrackScheme, tracks are arranged from left to right and time runs from top to bottom. At this time we just have a single track, with two branches. The cell we tracked divides immediately after the first time-point, which is represent in TrackScheme by a fork going down. Each branch below this fork represents the annotation of a daughter cell. However, all the spots and links for these two daughter cells still belong to the same track, as they are connected \emph{via} the mother cell.
+In TrackScheme, tracks are arranged from left to right and time runs from top to bottom. At this time we just have a single track, with two branches. The cell we tracked divides immediately after the first time-point, which is represented in TrackScheme by a fork going down. Each branch below this fork represents the annotation of a daughter cell. However, all the spots and links for these two daughter cells still belong to the same track, as they are connected \emph{via} the mother cell.
+
+Though this view is very synthetic, there is a lot you can do with TrackMate. 
+
+
+\subsection{Moving around in TrackScheme.}
+%-----------------------------------------
+
+Moving around is done classically with the mouse, and the panning is triggered by holding down the \keys{Shift} and \keys{Control} keys:
+\begin{myitemize}
+	\item \keys{Mousewheel} scrolls up and down.
+	\item \keys{Shift-Mousewheel} scrolls left and right.
+	\item \keys{Control-Shift-Mouse drag} pans the view.
+
+\end{myitemize}
+
 
 
 
