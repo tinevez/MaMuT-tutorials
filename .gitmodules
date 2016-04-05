@@ -1,0 +1,3 @@
+[submodule "build"]
+	path = build
+	url = ssh://pietzsch@localhost:10022/home/pietzsch/git/tex.git
