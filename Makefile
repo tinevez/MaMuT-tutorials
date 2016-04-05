@@ -5,4 +5,3 @@ all:
 	pdflatex GettingStartedWithMaMuT.tex
 	./convert_to_wiki.py GettingStartedWithMaMuT.wtex GettingStartedWithMaMuT.txt
 
-include ./build/Makefile.targets
