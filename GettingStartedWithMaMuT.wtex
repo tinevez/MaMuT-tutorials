@@ -68,13 +68,16 @@
 \begin{document}
 \maketitle
 
+
+This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
+
+
 </latex>
 <wiki>
 __TOC__
 </wiki>
 
-
-This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
+\tableofcontents
 
 
 
@@ -311,14 +314,21 @@ Note that when you create a link with this method, after link creating the selec
 %----------------------------------
 
 Press \keys{Shift-L} with a MaMuT viewer window active. A message should appear in the 
-MaMuT viewer that states the auto-linking mode is now on. In this mode, a link is automatically created when you create a new spot between this spot and the last one in the selection. Then the selection is changed to be the last spot added. Using this, you can quickly create lineage by moving forward in time with the keyboard and creating spots by double-clicking or typing \keys{A} on cells.
+MaMuT viewer that states the auto-linking mode is now on. In this mode, a link is automatically created when you create a new spot between this spot and the last one in the selection. Then the selection is changed to be the last spot added. Using this, you can quickly create lineage by moving forward in time with the keyboard and creating spots by typing \keys{A}. You can also use \keys{Double Click} to create spots, but because a simple click would clear the selection, you have to hold the \keys{Shift} key down to use auto-linking with mouse clicks.
 
-Try to use the auto-linking mode to create the cell lineage of the dividing cell above, this time following the other daughter cell. Move back to the first time-point, select the mother cell, move to the second time-point (\keys{M}) and add a spot (\keys{A} or \keys{Double Click}) on the cell location. Repeat by following the right daughter cell. You should end up with an annotation that resembles the following:
+Try to use the auto-linking mode to create the cell lineage of the dividing cell above, this time following the other daughter cell. Move back to the first time-point, select the mother cell, move to the second time-point \keys{M} and add a spot \keys{A} or \keys{Shift-Double Click} on the cell location. Repeat by following the right daughter cell. You should end up with an annotation that resembles the following:
 
 \screenshotB{MaMuT_DesiredTracking_2.PNG}
 
+At this stage, your first track has two branches: the first cell at t=0 divides into two daughters, and each daughter makes a branch in the track. You do not have to specify to what track you want to branch from. Tracks are automatically merged and split when you add or remove links. The only editing you have to do is at the link level, and track are discovered from the spots connected by the links you created.
 
 
+\subsection{Display settings for tracks.}
+%---------------------------------------
+
+Notice that the look of tracks (represented by a straight line for each link) can be tuned in the same way spots are. 
+
+\screenshotB{MaMuT_ConfigureTrackDisplay.pdf}
 
 
 
