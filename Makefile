@@ -1,25 +1,5 @@
-# the filename of the document
-
-all:
-	make -C paper
-	make -C supplement
-	pdftk \
-		paper/nm.pdf \
-		nmfigure/drawing.pdf \
-		supplement/supplement.pdf \
-		cat output nm.pdf
-
-cleanall: clean
-	make -C paper clean
-	make -C suppl-fileformat clean
-	make -C suppl-rendering clean
-	make -C suppl-architecture clean
-	make -C suppl-plugins clean
-	make -C supplement clean
-
-
+all:  GettingStartedWithMaMuT.tex GettingStartedWithMaMuT
 #all: wiki.tex wiki
-
 #all: wikiserver.tex wikiserver
 
 #all: tikztest
@@ -27,6 +7,10 @@ cleanall: clean
 .PHONY:
 tikztest: TEXFILE=tikztest.tex
 tikztest: default
+
+.PHONY:
+GettingStartedWithMaMuT: TEXFILE=GettingStartedWithMaMuT.tex
+GettingStartedWithMaMuT: default
 
 .PHONY:
 wiki: TEXFILE=wiki.tex
