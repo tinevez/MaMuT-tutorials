@@ -330,6 +330,27 @@ Notice that the look of tracks (represented by a straight line for each link) ca
 
 \screenshotB{MaMuT_ConfigureTrackDisplay.pdf}
 
+Track coloring uses the same feature system than for spots. There are scalar numerical features associated to tracks and they are used to generate a color from a jet colormap. However, there is two kind of features for tracks:
+\begin{myitemize}
+	\item There are \emph{track features}, defined for whole tracks. For instance: the number of spots in a track, the displacement from the start to the end of track, \etc. If you pick a track feature, all the links of a track will share the same color.
+	\item There are \emph{edge features}, defined for a single link. These are features that are simply defined by a link between two spots, for instance, the instantaneous velocity for the link. Then each link may be of a different color.
+\end{myitemize}
+
+There is also a \emph{default} category, like for spots, that allow for using a uniform color or to use link colors set manually elsewhere.
+
+
+
+\section{TrackScheme.}
+%---------------------
+
+TrackScheme is the second view offered in MaMuT. It can be seen as a lineage visualizer or editor. In TrackScheme, the image data as well as the spatial location of spots are completely discarded in favor of a hierarchical layout that highlights how cells divide in time.
+
+In the main MaMuT GUI window, click on the \smallimg{Icon3a_print_transparency.png} \textbf{TrackScheme} button. A new window should appear, with the following content.
+
+TODO TODO
+
+In TrackScheme, tracks are arranged from left to right and time runs from top to bottom. At this time we just have a single track, with two branches. The cell we tracked divides immediately after the first time-point, which is represent in TrackScheme by a fork going down. Each branch below this fork represents the annotation of a daughter cell. However, all the spots and links for these two daughter cells still belong to the same track, as they are connected \emph{via} the mother cell.
+
 
 
 <latex>
