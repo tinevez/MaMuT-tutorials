@@ -99,8 +99,11 @@ def keys(match):
   t = re.sub( r"\\arrowkeyleft", r"Left", t );
   t = re.sub( r"\\arrowkeyright", r"Right", t );
   t = re.sub( r"\s*\+\s*", r"|", t );
+  t = re.sub( r"LATEXGROUPEDPLUS", r"+", t );
   return r"KEYPRESSOPENkey press|" + t + "KEYPRESSCLOSE"
+text = re.sub( r"{\+}", r"LATEXGROUPEDPLUS", text, flags = re.DOTALL)
 text = re.sub( r"\\keys{(.*?)}", keys, text, flags = re.DOTALL)
+text = re.sub( r"LATEXGROUPEDPLUS", r"{+}", text, flags = re.DOTALL)
 
 
 # \menu{x} to ''x''
