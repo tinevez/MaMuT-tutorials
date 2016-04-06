@@ -45,14 +45,17 @@
 
 % Small images in text (for e.g. small icon).
 \newcommand*{\smallimg}[1]{%
-  \raisebox{-.3\baselineskip}{%
+  \raisebox{-.1\baselineskip}{%
     \includegraphics[
-      height=\baselineskip,
+      height=0.8\baselineskip,
       width=\baselineskip,
       keepaspectratio,
     ]{figures/#1}%
   }%
 }
+
+% Properly hyphen TrackScheme
+\newcommand\TrackScheme[0]{Track\-Scheme\xspace}
 
 % Less space when we make bullet lists.
 \newenvironment{myitemize}
@@ -402,7 +405,7 @@ Though TrackScheme is a view of the annotation data like the MaMuT viewer, it co
 \screenshotB{MaMuT_TrackSchemeTrackDisplayColor.png}
 
 Tracks have a name, and are arranged in columns, separated by a vertical black line. 
-TrackScheme arranges the annotations line by line, and each line represents a time-point. The row header tells you what time-point you are looking at. The background color of each row alternates to highlight different frames. If you find the background too crowded, you can disable the alternating color by clicking on the \textbf{Display decoration button} on the toolbar. The second mode disables track columns and rows alternating colors; the third mode re-enables track columns. 
+\TrackScheme arranges the annotations line by line, and each line represents a time-point. The row header tells you what time-point you are looking at. The background color of each row alternates to highlight different frames. If you find the background too crowded, you can disable the alternating color by clicking on the \smallimg{Icon_application_view_columns.png} \textbf{Display decoration button} on the toolbar. The second mode disables track columns and rows alternating colors; the third mode re-enables track columns. 
 
 \screenshotB{MaMuT_TrackSchemeDecorationButton.png}
 
@@ -419,9 +422,12 @@ The hierarchical layout of the lineages provided by TrackScheme can be useful fo
 \screenshotB{MaMuT_TrackSchemeExportButtons.pdf}
 
 \begin{myitemize}
-	\item The \textbf{Capture undecorated TrackScheme} button will generate a view of TrackScheme and open it in Fiji. The background is set to white and the zoom level is set to the default, regardless of what the actual zoom is in TrackScheme. Once this image is in Fiji, you can modify it, save it, \etc using the tools in Fiji.
-	\item The \textbf{Capture TrackScheme with decorations} button does the converse. It captures a snapshot of the TrackScheme window as is, and uses the current zoom level to generate an image.
-	\item The \textbf{Export to...} opens file browser on which you can pick the export file format and its location. Many file formats are supported:
+
+	\item The \smallimg{Icon_camera_go.png} \textbf{Capture undecorated TrackScheme} button will generate a view of \TrackScheme and open it in Fiji. The background is set to white and the zoom level is set to the default, regardless of what the actual zoom is in TrackScheme. Once this image is in Fiji, you can modify it, save it, \etc using the tools in Fiji.
+	
+	\item The \smallimg{Icon_camera_edit.png} \textbf{Capture TrackScheme with decorations} button does the converse. It captures a snapshot of the TrackScheme window as is, and uses the current zoom level to generate an image.
+	
+	\item The \smallimg{Icon_camera_export.png} \textbf{Export to...} opens file browser on which you can pick the export file format and its location. Many file formats are supported:
 	\begin{myitemize}
 		\item PNG image file with/without transparent background.
 		\item PDF or SVG file, that can later be edited with \eg Illustrator.
@@ -431,10 +437,95 @@ The hierarchical layout of the lineages provided by TrackScheme can be useful fo
 		\item The MXE file format is a specialized XML format, that can be parsed with classical XML parsers.
 		\item And all the common image formats (PNG, JPEG, GIF, BMP).
 	\end{myitemize}
-	
-	
-
 \end{myitemize}
+
+
+\subsection{TrackScheme info pane and feature plots.}
+%------------------------------------------------------
+
+
+\subsubsection{The info pane.}
+%-----------------------------
+
+
+
+\subsubsection{Feature plots.}
+%-----------------------------
+
+
+
+
+
+\section{Editing annotations with TrackScheme.}
+%----------------------------------------------
+
+The main application of TrackScheme is to edit annotations in conjunction with creating and moving spots on another view. Let's do this now. 
+
+
+\subsection{Linking spots with the popup menu item.}
+%---------------------------------------------------
+
+Make sure you have a TrackScheme window open, a MaMuT viewer window open, and move the later close to the cells we tracked previously. Make sure the auto-linking mode is off \keys{Shift-L}, and start creating spots over a cell close to the first one. Try to follow it over time. You should see spots appearing in TrackScheme, under a special column on the right called \texttt{Unlaid spots}. The TrackScheme window should resembles this:
+
+\screenshotA{MaMuT_TrackSchemeUnlaidSpots.png}
+
+Normally, TrackScheme only displays the spots that belong in a track. Lonely spots that are not linked to anything when you launch TrackScheme are not shown. The spots you create after TrackScheme are however stacked under this special column. From there, you can attach them to an existing track or create a new one.
+
+Here is a way to do it. In TrackScheme, select all the spots in the unlaid column \keys{Left-Mousedrag}. \keys{Right-click} somewhere in TrackScheme to make the popup menu appear. One of the menu item should be something like \texttt{Link 10 spots}. Choose this one. Each spots is then linked to the next one, frame by frame, and the links should appear in TrackScheme and in the MaMuT viewer. You just created a new track.
+
+
+\subsection{Triggering re-layout and style refresh.}
+%---------------------------------------------------
+
+Notice that the TrackScheme display of this new track is somewhat unsatisfactory. The first track may have changed color in the MaMuT viewer, but this change did not happen in TrackScheme. Plus, the new track does not have its own column, and the color of some of its spots might be wrong. The reasons for this are:
+\begin{myitemize}
+
+	\item We changed the annotation and these changes affected the numerical features that color the tracks. For instance, if you picked the \texttt{Track index} numerical feature for track coloring, there is now two tracks instead of one. The feature update is seen immediately in the MaMuT viewer, but for performance reason, TrackScheme as well as the color line on the main GUI window have to be refreshed manually. To do so, click on the  \smallimg{Icon_theme.png} \textbf{Style} button in the TrackScheme toolbar, and directly on the track color line on the main GUI window.
+	
+	\item The changes we made affected the track hierarchy, but the re-layout is not triggered automatically by such changes. To do so, press the  \smallimg{Icon_refresh.png} \textbf{Layout} button in TrackScheme toolbar. This will reorganize TrackScheme with a proper layout. Since in TrackScheme, spots can be moved around at will, this is also a good way to reorder things.
+	
+\end{myitemize}
+
+
+\subsection{Editing track names and imposing track order.}
+%---------------------------------------------------------
+
+Tracks are ordered from left to right alphanumerically with their name. To change a track name, \keys{Double-click} on it in the column header part. Track names should be made of a single line with a combination of any character. 
+
+Try for instance to change the track order by changing their name. Let's call the first one 'B' and the second one 'A'. Click the \textbf{Layout} button. Your TrackScheme window should look like this:
+
+\screenshotB{MaMuT_TrackSchemeTrackNames.png}
+
+
+\subsection{Editing spot names and imposing branch order.}
+%---------------------------------------------------------
+
+Spots also have a name, that you can see either in the MaMuT viewer by checking the \textbf{Display spot names}, either in TrackScheme by using the \texttt{full} display style. They are all called \texttt{ID\#\#} by default, which is not very informative.
+
+To edit a spot name in TrackScheme, \keys{Double-click} on the spot. It should be replaced by an orange box  in which you can type the spot name. Press \keys{Shift-Enter} to validate the new name, or \keys{Escape} to cancel the change. Spot names may be several lines long, but their display might then not be very pleasing.
+
+You can also set the name of several spots at once. For instance, select the the whole second track (now named 'A') and \keys{Right click} (outside of a spot) to bring the popup menu. There is an item called \texttt{Edit 10 spot names}. The closest spot is changed to an edit box. When you validate the new name, all the selected spots get this new name.
+
+Apart from their use to mark some biological meaning to the annotations, spot names have several uses. There is a search box in TrackScheme toolbar that centers the view on spots with name matching the text you enter there. Press \keys{Enter} to loop over all the matching spots.
+
+Spot names are also used to decide in what order to lay out track branches. For instance, our track 'B' as a cell division in the second time-point. You can force one branch to be the laid left or the right by setting the name of the spot just after the division. Sister cells are laid out from left to right alphanumerically, like for tracks.
+
+\screenshotB{MaMuT_TrackSchemeSpotNames.png}
+
+
+\subsection{Linking spots with drag and drop.}
+%---------------------------------------------
+
+
+
+\subsection{Removing spots and links.}
+%-------------------------------------
+
+Simply select a bunch of spots and links and press \keys{Delete}.
+
+
+
+
 
 
 
