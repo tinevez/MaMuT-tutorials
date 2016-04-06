@@ -99,12 +99,19 @@ def keys(match):
   t = re.sub( r"\\arrowkeyleft", r"Left", t );
   t = re.sub( r"\\arrowkeyright", r"Right", t );
   t = re.sub( r"\s*\+\s*", r"|", t );
+  t = re.sub( r"LATEXGROUPEDPLUS", r"+", t );
   return r"KEYPRESSOPENkey press|" + t + "KEYPRESSCLOSE"
+text = re.sub( r"{\+}", r"LATEXGROUPEDPLUS", text, flags = re.DOTALL)
 text = re.sub( r"\\keys{(.*?)}", keys, text, flags = re.DOTALL)
+text = re.sub( r"LATEXGROUPEDPLUS", r"{+}", text, flags = re.DOTALL)
 
 
-# \menu{x} to ''x''
-text = re.sub( r"\\menu{(.*?)}", r"''\1''", text, flags = re.DOTALL)
+# \menu{x} to {{bc | ...}}
+def menu(match):
+  t = match.group(1);
+  t = re.sub( r"\s*\>\s*", r" | ", t );
+  return r"KEYPRESSOPENbc | " + t + "KEYPRESSCLOSE"
+text = re.sub( r"\\menu{(.*?)}", menu, text, flags = re.DOTALL)
 
 
 # \button{x} to ''x''
