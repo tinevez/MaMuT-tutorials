@@ -36,6 +36,7 @@
 \newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+\newcommand\TODO[1]{\textcolor{red}{#1}}
 
 % Small font in verbatime environment.
 \makeatletter
@@ -99,6 +100,7 @@ If you already have such a file, skip to the next section. Otherwise, we lazily 
 \begin{itemize}
 	\item they are \href{http://imagej.net/BigDataViewer#Exporting_from_ImageJ_Stacks}{\coloredlink{opened as an ImageJ stack}};
 	\item they come from a \href{http://imagej.net/BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{\coloredlink{SPIM processing pipeline}}.
+	\item \TODO{TODO [Tobias]: also refer to new \href{http://imagej.net/Multiview-Reconstruction}{\coloredlink{Multiview-Reconstruction}} datasets that are automatically in \bdv format. \bdv tutorial should also be updated in this regard.}
 \end{itemize}
 
 
