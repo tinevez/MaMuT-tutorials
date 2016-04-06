@@ -36,6 +36,7 @@
 \newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+\newcommand\TODO[1]{\textcolor{red}{#1}}
 
 % Small font in verbatime environment.
 \makeatletter
@@ -93,12 +94,13 @@ Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater
 \section{Data preparation.}
 %————————————————————————-
 
-MaMuT relies on and exploit the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
+MaMuT relies on and exploits the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that they can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
 
 If you already have such a file, skip to the next section. Otherwise, we lazily rely on the excellent \bdv documentation and point directly to the \bdv instructions to prepare your images, depending on whether
 \begin{itemize}
 	\item they are \href{http://imagej.net/BigDataViewer#Exporting_from_ImageJ_Stacks}{\coloredlink{opened as an ImageJ stack}};
 	\item they come from a \href{http://imagej.net/BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{\coloredlink{SPIM processing pipeline}}.
+	\item \TODO{TODO [Tobias]: also refer to new \href{http://imagej.net/Multiview-Reconstruction}{\coloredlink{Multiview-Reconstruction}} datasets that are automatically in \bdv format. \bdv tutorial should also be updated in this regard.}
 \end{itemize}
 
 
@@ -106,7 +108,7 @@ If you already have such a file, skip to the next section. Otherwise, we lazily 
 \section{Opening a dataset in MaMuT.}
 %——————————————————————————————————-
 
-We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
+Once you have prepared your images for opening in the \bdv, you should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8"?>
 <SpimData version="0.2">
@@ -117,7 +119,8 @@ We now assume that you have prepared your images, as if to open it in the Big Da
 ...
 \end{verbatim}
 
-If you did not and want to rely on an example dataset for this tutorial, download it here: \coloredlink{TODO}. In the following, we assume that you are using this data.
+Instead of preparing your own dataset, you can also download an example dataset for this tutorial \href{http://bds.mpi-cbg.de/mamut-example/}{\coloredlink{here}}.
+In the following, we assume that you are using this data.
 
 Start MaMuT on this dataset by browsing to \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
 
