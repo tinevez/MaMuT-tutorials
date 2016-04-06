@@ -29,7 +29,7 @@ text = re.sub( r"<latex>\n?(.*?)</latex>\n?", r"\1", text, flags = re.DOTALL)
 
 
 if outfilename is None:
-  print text
+  print(text)
 else:
   f = open( outfilename, 'w' )
   f.write( text )
