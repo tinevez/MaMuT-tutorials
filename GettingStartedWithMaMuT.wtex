@@ -36,6 +36,7 @@
 \newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+\newcommand\TODO[1]{\textcolor{red}{#1}}
 
 % Small font in verbatime environment.
 \makeatletter
@@ -68,13 +69,16 @@
 \begin{document}
 \maketitle
 
+
+This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
+
+
 </latex>
 <wiki>
 __TOC__
 </wiki>
 
-
-This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
+\tableofcontents
 
 
 
@@ -90,12 +94,13 @@ Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater
 \section{Data preparation.}
 %————————————————————————-
 
-MaMuT relies on and exploit the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
+MaMuT relies on and exploits the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that they can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
 
 If you already have such a file, skip to the next section. Otherwise, we lazily rely on the excellent \bdv documentation and point directly to the \bdv instructions to prepare your images, depending on whether
 \begin{itemize}
 	\item they are \href{http://imagej.net/BigDataViewer#Exporting_from_ImageJ_Stacks}{\coloredlink{opened as an ImageJ stack}};
 	\item they come from a \href{http://imagej.net/BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{\coloredlink{SPIM processing pipeline}}.
+	\item \TODO{TODO [Tobias]: also refer to new \href{http://imagej.net/Multiview-Reconstruction}{\coloredlink{Multiview-Reconstruction}} datasets that are automatically in \bdv format. \bdv tutorial should also be updated in this regard.}
 \end{itemize}
 
 
@@ -103,7 +108,7 @@ If you already have such a file, skip to the next section. Otherwise, we lazily 
 \section{Opening a dataset in MaMuT.}
 %——————————————————————————————————-
 
-We now assume that you have prepared your images, as if to open it in the Big Data Viewer. You should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
+Once you have prepared your images for opening in the \bdv, you should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8"?>
 <SpimData version="0.2">
@@ -114,7 +119,8 @@ We now assume that you have prepared your images, as if to open it in the Big Da
 ...
 \end{verbatim}
 
-If you did not and want to rely on an example dataset for this tutorial, download it here: \coloredlink{TODO}. In the following, we assume that you are using this data.
+Instead of preparing your own dataset, you can also download an example dataset for this tutorial \href{http://bds.mpi-cbg.de/mamut-example/}{\coloredlink{here}}.
+In the following, we assume that you are using this data.
 
 Start MaMuT on this dataset by browsing to \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
 
@@ -311,13 +317,56 @@ Note that when you create a link with this method, after link creating the selec
 %----------------------------------
 
 Press \keys{Shift-L} with a MaMuT viewer window active. A message should appear in the 
-MaMuT viewer that states the auto-linking mode is now on. In this mode, a link is automatically created when you create a new spot between this spot and the last one in the selection. Then the selection is changed to be the last spot added. Using this, you can quickly create lineage by moving forward in time with the keyboard and creating spots by double-clicking or typing \keys{A} on cells.
+MaMuT viewer that states the auto-linking mode is now on. In this mode, a link is automatically created when you create a new spot between this spot and the last one in the selection. Then the selection is changed to be the last spot added. Using this, you can quickly create lineage by moving forward in time with the keyboard and creating spots by typing \keys{A}. You can also use \keys{Double Click} to create spots, but because a simple click would clear the selection, you have to hold the \keys{Shift} key down to use auto-linking with mouse clicks.
 
-Try to use the auto-linking mode to create the cell lineage of the dividing cell above, this time following the other daughter cell. Move back to the first time-point, select the mother cell, move to the second time-point (\keys{M}) and add a spot (\keys{A} or \keys{Double Click}) on the cell location. Repeat by following the right daughter cell. You should end up with an annotation that resembles the following:
+Try to use the auto-linking mode to create the cell lineage of the dividing cell above, this time following the other daughter cell. Move back to the first time-point, select the mother cell, move to the second time-point \keys{M} and add a spot \keys{A} or \keys{Shift-Double Click} on the cell location. Repeat by following the right daughter cell. You should end up with an annotation that resembles the following:
 
 \screenshotB{MaMuT_DesiredTracking_2.PNG}
 
+At this stage, your first track has two branches: the first cell at t=0 divides into two daughters, and each daughter makes a branch in the track. You do not have to specify to what track you want to branch from. Tracks are automatically merged and split when you add or remove links. The only editing you have to do is at the link level, and track are discovered from the spots connected by the links you created.
 
+
+\subsection{Display settings for tracks.}
+%---------------------------------------
+
+Notice that the look of tracks (represented by a straight line for each link) can be tuned in the same way spots are. 
+
+\screenshotB{MaMuT_ConfigureTrackDisplay.pdf}
+
+Track coloring uses the same feature system than for spots. There are scalar numerical features associated to tracks and they are used to generate a color from a jet colormap. However, there is two kind of features for tracks:
+\begin{myitemize}
+	\item There are \emph{track features}, defined for whole tracks. For instance: the number of spots in a track, the displacement from the start to the end of track, \etc. If you pick a track feature, all the links of a track will share the same color.
+	\item There are \emph{edge features}, defined for a single link. These are features that are simply defined by a link between two spots, for instance, the instantaneous velocity for the link. Then each link may be of a different color.
+\end{myitemize}
+
+There is also a \emph{default} category, like for spots, that allow for using a uniform color or to use link colors set manually elsewhere.
+
+
+
+\section{TrackScheme.}
+%---------------------
+
+TrackScheme is the second view offered in MaMuT. It can be seen as a lineage visualizer or editor. In TrackScheme, the image data as well as the spatial location of spots are completely discarded in favor of a hierarchical layout that highlights how cells divide in time.
+
+In the main MaMuT GUI window, click on the \smallimg{Icon3a_print_transparency.png} \textbf{TrackScheme} button. A new window should appear, with the following content.
+
+\screenshotC{MaMuT_TrackSchemeStart.png}
+
+In TrackScheme, tracks are arranged from left to right and time runs from top to bottom. At this time we just have a single track, with two branches. The cell we tracked divides immediately after the first time-point, which is represented in TrackScheme by a fork going down. Each branch below this fork represents the annotation of a daughter cell. However, all the spots and links for these two daughter cells still belong to the same track, as they are connected \emph{via} the mother cell.
+
+Though this view is very synthetic, there is a lot you can do with TrackMate. 
+
+
+\subsection{Moving around in TrackScheme.}
+%-----------------------------------------
+
+Moving around is done classically with the mouse, and the panning is triggered by holding down the \keys{Shift} and \keys{Control} keys:
+\begin{myitemize}
+	\item \keys{Mousewheel} scrolls up and down.
+	\item \keys{Shift-Mousewheel} scrolls left and right.
+	\item \keys{Control-Shift-Mouse drag} pans the view.
+
+\end{myitemize}
 
 
 
