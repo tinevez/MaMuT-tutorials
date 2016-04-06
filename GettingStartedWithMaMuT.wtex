@@ -335,11 +335,24 @@ Notice that the look of tracks (represented by a straight line for each link) ca
 
 Track coloring uses the same feature system than for spots. There are scalar numerical features associated to tracks and they are used to generate a color from a jet colormap. However, there is two kind of features for tracks:
 \begin{myitemize}
-	\item There are \emph{track features}, defined for whole tracks. For instance: the number of spots in a track, the displacement from the start to the end of track, \etc. If you pick a track feature, all the links of a track will share the same color.
-	\item There are \emph{edge features}, defined for a single link. These are features that are simply defined by a link between two spots, for instance, the instantaneous velocity for the link. Then each link may be of a different color.
+	\item There are \texttt{track features}, defined for whole tracks. For instance: the number of spots in a track, the displacement from the start to the end of track, \etc. If you pick a track feature, all the links of a track will share the same color.
+	\item There are \texttt{edge features}, defined for a single link. These are features that are simply defined by a link between two spots, for instance, the instantaneous velocity for the link. Then each link may be of a different color.
 \end{myitemize}
 
-There is also a \emph{default} category, like for spots, that allow for using a uniform color or to use link colors set manually elsewhere.
+There is also a \texttt{default} category, like for spots, that allow for using a uniform color or to use link colors set manually elsewhere.
+
+Tracks extend in time, and they are displayed as lines over the image data. By default, the whole tracks are displayed from their start to their end. You can control how they appear with the \textbf{Track display mode} menu:
+
+\begin{myitemize}
+	\item \texttt{Show all entire tracks} is the default and display all the whole tracks with no time cue.
+	\item \texttt{Show local tracks} only shows a portion of the track which extend shortly before and after the current time-point. As the time distance increases, the track display fades in the image using transparency. You can control how much time context you want to display using the \textbf{Limit frame depth} checkbox and the \textbf{Frame depth} field.
+	\item \texttt{Show local tracks, backward} is similar, but only extends tracks backward in time (this mode is sometimes nicknamed 'dragon tail' in other softwares).
+	\item \texttt{Show local tracks, forward} is the same thing, but forward in time.
+	\item The same three modes are repeated with the \texttt{fast} label added. They are identical to their counterparts, except that optimizations are made in favor of drawing speed, sacrificing frivolities such as transparency and anti-aliasing.
+	\item The last mode is \texttt{Show selection only}, and only draws what is currently selected. It is very useful to make sense of a lineage amongst a possibly very large dataset. Careful: the content of the selection model can still be edited in this mode. For instance, if you click outside a spot, the selection is cleared and nothing will be displayed in this mode. This mode is best used in conjunction with TrackScheme, which we describe in the next section.
+\end{myitemize}
+
+The \textbf{Limit drawing depth} field is used to restrict the Z neighborhood in which tracks are drawn. If activated, only part of the tracks that are close to the current Z plane of the view will be drawn. The extend of this Z section is set by the numerical value in the field.
 
 
 
@@ -360,14 +373,68 @@ Though this view is very synthetic, there is a lot you can do with TrackMate.
 \subsection{Moving around in TrackScheme.}
 %-----------------------------------------
 
-Moving around is done classically with the mouse, and the panning is triggered by holding down the \keys{Shift} and \keys{Control} keys:
+Moving around is done classically with the mouse, and the panning is triggered by holding down the \keys{Space} key:
 \begin{myitemize}
 	\item \keys{Mousewheel} scrolls up and down.
 	\item \keys{Shift-Mousewheel} scrolls left and right.
-	\item \keys{Control-Shift-Mouse drag} pans the view.
-
+	\item \keys{Space-Mousedrag} pans the view, à la ImageJ. If you pull the mouse out of the TrackScheme window, it will scroll in the direction of the mouse cursor.
+	\item \keys{Space-Mousewheel} is used for zooming.
 \end{myitemize}
 
+The keyboard can also be used:
+\begin{myitemize}
+	\item The numeric keypad numbers \keys{6}, \keys{9}, \keys{8}, \keys{7}, \keys{4}, \keys{1}, \keys{2} and \keys{3} are used to move as on a compass.
+	\item \keys{{+}} zoom in. 
+	\item \keys{{-}} zoom out.
+	\item \keys{{=}} restores the zoom to its default level.
+\end{myitemize}
+
+The top-left part of the TrackScheme window shows the outline of the graph. The blue square represents the current view and can be resized and moved around. 
+
+\screenshotC{MaMuT_TrackSchemeOutline.pdf}
+
+
+\subsection{Configuring TrackScheme look.}
+%-----------------------------------------
+
+Though TrackScheme is a view of the annotation data like the MaMuT viewer, it completely and purposely ignores some the display settings you can set on the main GUI window, such as the track display mode and the global visibility of spots and tracks. The color it chooses for the links and spots representation is also peculiar: The spot color by feature mode is ignored, even for the circles that represent spot. They take their color from the track color mode, and use the color of the incident link. For instance, if you pick the \texttt{Displacement} feature in the \textbf{track color mode}, you will get this:
+
+\screenshotB{MaMuT_TrackSchemeTrackDisplayColor.png}
+
+Tracks have a name, and are arranged in columns, separated by a vertical black line. 
+TrackScheme arranges the annotations line by line, and each line represents a time-point. The row header tells you what time-point you are looking at. The background color of each row alternates to highlight different frames. If you find the background too crowded, you can disable the alternating color by clicking on the \textbf{Display decoration button} on the toolbar. The second mode disables track columns and rows alternating colors; the third mode re-enables track columns. 
+
+\screenshotB{MaMuT_TrackSchemeDecorationButton.png}
+
+Finally, there is two \textbf{Styles} for the spot schemes. The \texttt{simple} style sonly displays them as round spots. The \texttt{full} style displays them as rounded boxes, with each spot name apparent. In the \texttt{full} style, small thumbnails can be captured and displayed in TrackScheme for all spots. Just next to the menu, there is a thumbnail button. If activated, thumbnails are collected from all spots, using the image source they were created on. Thumbnails are captured around the spot location, using their radius plus a tolerance factor. Interestingly, the \textbf{Spot display radius ratio} is used to define the size of the thumbnail. For instance, with a display factor of 2, you can obtain the layout below. Notice that the spot boxes can be resized manually to better display thumbnails.
+
+\screenshotC{MaMuT_TrackSchemeThumbnails.pdf}
+
+
+\subsection{Exporting TrackScheme display.}
+%-----------------------------------------
+
+The hierarchical layout of the lineages provided by TrackScheme can be useful for communications. It can be exported using the three export buttons in the toolbar.
+
+\screenshotB{MaMuT_TrackSchemeExportButtons.pdf}
+
+\begin{myitemize}
+	\item The \textbf{Capture undecorated TrackScheme} button will generate a view of TrackScheme and open it in Fiji. The background is set to white and the zoom level is set to the default, regardless of what the actual zoom is in TrackScheme. Once this image is in Fiji, you can modify it, save it, \etc using the tools in Fiji.
+	\item The \textbf{Capture TrackScheme with decorations} button does the converse. It captures a snapshot of the TrackScheme window as is, and uses the current zoom level to generate an image.
+	\item The \textbf{Export to...} opens file browser on which you can pick the export file format and its location. Many file formats are supported:
+	\begin{myitemize}
+		\item PNG image file with/without transparent background.
+		\item PDF or SVG file, that can later be edited with \eg Illustrator.
+		\item As a HTML page, though the layout is somewhat simplified.
+		\item The now deprecated VML file format (replaced by SVG).
+		\item As text, but this only saves a minimal amount of information.
+		\item The MXE file format is a specialized XML format, that can be parsed with classical XML parsers.
+		\item And all the common image formats (PNG, JPEG, GIF, BMP).
+	\end{myitemize}
+	
+	
+
+\end{myitemize}
 
 
 
