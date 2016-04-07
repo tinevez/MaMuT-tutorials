@@ -27,6 +27,13 @@ text = re.sub( r"<wiki>\n?(.*?)</wiki>\n?", r"", text, flags = re.DOTALL)
 text = re.sub( r"<latex>\n?(.*?)</latex>\n?", r"\1", text, flags = re.DOTALL)
 
 
+# dirty '#' handling in \wikilink
+def escapepound(match):
+  t = match.group(0)
+  t = re.sub( r"#", r"\#", t )
+  return t
+text = re.sub( r"\\wikilink{(.*?)}", escapepound, text, flags = re.DOTALL)
+
 
 if outfilename is None:
   print(text)

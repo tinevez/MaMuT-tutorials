@@ -36,6 +36,7 @@
 \newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+\newcommand\wikilink[2]{\href{http://imagej.net/#1}{\coloredlink{#2}}}
 \newcommand\TODO[1]{\textcolor{red}{#1}}
 
 % Small font in verbatime environment.

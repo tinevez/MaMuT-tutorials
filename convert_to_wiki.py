@@ -85,7 +85,8 @@ text = re.sub( r"\\\\", r"", text, flags = re.DOTALL)
 text = re.sub( r"\\noindent\n?", r"", text, flags = re.DOTALL)
 
 
-
+# \wikilink{...}{...} to [[...|'''...''']]
+text = re.sub( r"\\wikilink{(.*?)}{(.*?)}", r"[[\1|'''\2''']]", text, flags = re.DOTALL)
 
 
 # \keys{...} to {{key press|...}}
