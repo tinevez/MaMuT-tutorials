@@ -107,11 +107,6 @@ If you already have such a file, skip to the next section. Otherwise, we lazily 
 	\item \TODO{TODO [Tobias]: also refer to new \wikilink{Multiview-Reconstruction}{Multiview-Reconstruction} datasets that are automatically in \bdv format. \bdv tutorial should also be updated in this regard.}
 \end{itemize}
 
-
-
-\section{Opening a dataset in MaMuT.}
-%——————————————————————————————————-
-
 Once you have prepared your images for opening in the \bdv, you should have a \texttt{.xml} file and a possibly very large \texttt{.h5} file on your computer. The \texttt{.xml} file must be the output of the \bdv data preparation. It should start with the following lines:
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8"?>
@@ -125,6 +120,12 @@ Once you have prepared your images for opening in the \bdv, you should have a \t
 
 Instead of preparing your own dataset, you can also download an example dataset for this tutorial \href{http://bds.mpi-cbg.de/mamut-example/}{\coloredlink{here}}.
 In the following, we assume that you are using this data.
+
+
+
+\section{Opening a dataset in MaMuT.}
+%——————————————————————————————————-
+
 
 Start MaMuT on this dataset by browsing to \menu{Plugins > MaMuT > Launch new MaMuT annotation}:
 
@@ -157,16 +158,28 @@ MaMuT offers three kind of views:
 \section{The MaMuT Viewer.}
 %——————————————————————————
 
+
 Let's start with the MaMuT Viewer. Click on its button on the GUI, the one with a
 picture of a mammoth \smallimg{mammouth-32x32.png}. A \bdv window should appear. 
 
 \screenshotC{MaMuT_ViewerExample.png}
+
+
+
+\subsection{The \Bdv framework and large, multi-view images.}
+%——————————————————————————--------------------------------
 
 The MaMuT viewer is really a \bdv window, so if you are familiar with this plugin, everything you know applies there. If are not, here is a recapitulation of how the \bdv works and how to interact with it.
 
 A little word on the \bdv: The \bdv was made to deal with very large images of a sample possibly acquired from several different orientations (\eg rotating the sample in a SPIM). These different orientations (or views, but here we use this word for another notion) of the data amount to a new dimension. This dimension if more complex to handle than \eg multiple channels, because changing the acquisition orientation generates a data block which is not aligned with the other blocks (rotated, translated, and if you change the magnification, scaled), and does not have necessary the same size. As of today, only a limited numbers of image viewers can deal with multiple orientations, and the \bdv is one of them.
 
 Each of these orientations generate a data block, that we call \emph{source} here. A source is monochromatic: if several fluorescence channels are captured under a single orientation, they each generate a source. The image data is not fully loaded in memory. It is cached efficiently following the caching strategy of the \bdv (detailed \wikilink{BigDataViewer#About_the_BigDataViewer_data_format}{here}).
+
+
+
+\subsection{The tutorial dataset.}
+%——————————————————————————-------
+
 
 The dataset we use for this tutorial is an excerpt from a long term time-lapse experiment done with a Zeiss LightSheet Z1, filming the development of a shrimp (\textit{Parhyale hawaiensis}) over several days. We have here the first 10 time-points, spreading over a bit more than 1 hour.  Three views were acquired that generated a source each:
 \begin{myitemize}
@@ -176,17 +189,13 @@ The dataset we use for this tutorial is an excerpt from a long term time-lapse e
 	\item Angle 0°, which is the first one in MaMuT, is the fused volume from all 3 input sources after spatiotemporal registration and multi-view deconvolution. 
 \end{myitemize}
 
-You can navigate through the data using the mouse and the keyboard. The key bindings can be redefined, but here are the default:
-Switching from one source to another is done with the numeric keys \keys{1} ... \keys{0} for up to 10 views. Pressing \keys{F} switches to the fused mode, where all sources are overlaid. You can add and remove sources from the fused view by pressing \keys{Shift+1} - \etc. The color and brightness of each source are defined in the \textbf{brightness and color} panel, brought by pressing the \keys{S} key.
 
-\screenshotB{MaMuT_ViewerBrightnessColor.png}
-On this screenshot, we used the fused mode, toggle the first and third sources off (the deconvolved source and the angle 280°), and looked at the data in a XZ plane.
 
-The MaMuT viewer also overlays some useful information:
 
-\screenshotB{MaMuT_ViewerOverlays.pdf}
+\subsection{Exploring the data with the MaMuT viewer.}
+%——————————————————————————---------------------------
 
-Navigating through the data in space and time uses the mouse and keyboard in a standard way: 
+Navigating through the data in space and time uses the mouse and keyboard in a standard way. Everything can be done with the mouse and keyboard. The key bindings can be redefined, but here are the default:
 
 \textbf{To pan and zoom:}
 \begin{myitemize}
@@ -214,6 +223,23 @@ Navigating through the data in space and time uses the mouse and keyboard in a s
 	\item \keys{[} Jump to the previous time step.
 	\item \keys{]} Jump to the next time step.
 \end{myitemize}
+
+
+
+\subsection{Configuring the source visibility and display.}
+%——————————————————————————-------------------------------
+
+Switching from one source to another is done with the numeric keys \keys{1} ... \keys{0} for up to 10 views. Pressing \keys{F} switches to the fused mode, where all sources are overlaid. You can add and remove sources from the fused view by pressing \keys{Shift+1} - \etc. The color and brightness of each source are defined in the \textbf{brightness and color} panel, brought by pressing the \keys{S} key.
+
+\screenshotB{MaMuT_ViewerBrightnessColor.png}
+On this screenshot, we used the fused mode, toggle the first and third sources off (the deconvolved source and the angle 280°), and looked at the data in a XZ plane.
+
+The MaMuT viewer also overlays some useful information:
+
+\screenshotB{MaMuT_ViewerOverlays.pdf}
+
+The MaMuT viewer only displays a slice of the current source(s). It fetches the pixel values it needs to generate a single slice through the data. By default, pixel values are interpolated using the nearest neighbor, which might generate a pixelated look for high level of zoom. By pressing \keys{I} you can toggle between nearest-neighbor interpolation, and tri-linear interpolation, which smoothes the display.
+
 
 
 
