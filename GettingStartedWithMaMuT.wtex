@@ -36,6 +36,7 @@
 \newcommand\screenshotC[1]{\centerline{\includegraphics[width=.5\textwidth]{figures/#1}}}
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
+\newcommand\wikilink[2]{\href{http://imagej.net/#1}{\coloredlink{#2}}}
 \newcommand\TODO[1]{\textcolor{red}{#1}}
 
 % Small font in verbatime environment.
@@ -73,7 +74,7 @@
 \maketitle
 
 
-This tutorial aims at getting you started with \href{http://imagej.net/MaMuT}{\coloredlink{MaMuT}}. We cover data preparation, and basic annotation process.
+This tutorial aims at getting you started with \wikilink{MaMuT}{MaMuT}. We cover data preparation, and basic annotation process.
 
 
 </latex>
@@ -88,7 +89,7 @@ __TOC__
 \section{Installation.}
 %————————————————————-
 
-Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater}}, there is not much to do. Simply follow the instructions on how to \href{http://imagej.net/How_to_follow_a_3rd_party_update_site}{\coloredlink{follow a 3rd party site}}, and subscribe to the MaMuT update site.  
+Well, thanks to the ImageJ \wikilink{Updater}{Updater}, there is not much to do. Simply follow the instructions on how to \wikilink{How_to_follow_a_3rd_party_update_site}{follow a 3rd party site}, and subscribe to the MaMuT update site.  
 
 \screenshotA{MaMuT_UpdateSite.png}
 
@@ -97,13 +98,13 @@ Well, thanks to the ImageJ \href{http://imagej.net/Updater}{\coloredlink{Updater
 \section{Data preparation.}
 %————————————————————————-
 
-MaMuT relies on and exploits the file format of the \href{http://imagej.net/BigDataViewer}{\coloredlink{BigDataViewer}}. You need to prepare your images so that they can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
+MaMuT relies on and exploits the file format of the \wikilink{BigDataViewer}{BigDataViewer}. You need to prepare your images so that they can be opened in the \bdv and there is no way around it. Actually, MaMuT was written specifically as an annotation platform for the \bdv, specializing in cell lineaging. 
 
 If you already have such a file, skip to the next section. Otherwise, we lazily rely on the excellent \bdv documentation and point directly to the \bdv instructions to prepare your images, depending on whether
 \begin{itemize}
-	\item they are \href{http://imagej.net/BigDataViewer#Exporting_from_ImageJ_Stacks}{\coloredlink{opened as an ImageJ stack}};
-	\item they come from a \href{http://imagej.net/BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{\coloredlink{SPIM processing pipeline}}.
-	\item \TODO{TODO [Tobias]: also refer to new \href{http://imagej.net/Multiview-Reconstruction}{\coloredlink{Multiview-Reconstruction}} datasets that are automatically in \bdv format. \bdv tutorial should also be updated in this regard.}
+	\item they are \wikilink{BigDataViewer#Exporting_from_ImageJ_Stacks}{opened as an ImageJ stack}, or
+	\item they come from a \wikilink{BigDataViewer#Integration_with_Fiji.27s_SPIMage_Processing_Tools}{SPIM processing pipeline}.
+	\item \TODO{TODO [Tobias]: also refer to new \wikilink{Multiview-Reconstruction}{Multiview-Reconstruction} datasets that are automatically in \bdv format. \bdv tutorial should also be updated in this regard.}
 \end{itemize}
 
 
@@ -148,7 +149,7 @@ MaMuT offers three kind of views:
   arranged from left to right according to their name. This view is useful to make
   sense of the annotation data, as well as to edit links between spots.
   \item \smallimg{sport_8ball.png} \textbf{3D Viewer} shows a 3D View of the annotation data in the physical
-  coordinate system, without the image data. It is based on the \href{http://imagej.net/3D_Viewer}{\coloredlink{ImageJ 3D Viewer}}. 
+  coordinate system, without the image data. It is based on the \wikilink{3D_Viewer}{ImageJ 3D Viewer}. 
 \end{itemize}
 
 
@@ -165,9 +166,7 @@ The MaMuT viewer is really a \bdv window, so if you are familiar with this plugi
 
 A little word on the \bdv: The \bdv was made to deal with very large images of a sample possibly acquired from several different orientations (\eg rotating the sample in a SPIM). These different orientations (or views, but here we use this word for another notion) of the data amount to a new dimension. This dimension if more complex to handle than \eg multiple channels, because changing the acquisition orientation generates a data block which is not aligned with the other blocks (rotated, translated, and if you change the magnification, scaled), and does not have necessary the same size. As of today, only a limited numbers of image viewers can deal with multiple orientations, and the \bdv is one of them.
 
-Each of these orientations generate a data block, that we call \emph{source} here. A source is monochromatic: if several fluorescence channels are captured under a single orientation, they each generate a source. The image data is not fully loaded in memory. It is cached efficiently following the caching strategy of the \bdv (detailed 
-\href{http://imagej.net/BigDataViewer#About_the_BigDataViewer_data_format}
-{\coloredlink{here}}).
+Each of these orientations generate a data block, that we call \emph{source} here. A source is monochromatic: if several fluorescence channels are captured under a single orientation, they each generate a source. The image data is not fully loaded in memory. It is cached efficiently following the caching strategy of the \bdv (detailed \wikilinkBigDataViewer#About_the_BigDataViewer_data_format}{here}).
 
 The dataset we use for this tutorial is an excerpt from a long term time-lapse experiment done with a Zeiss LightSheet Z1, filming the development of a shrimp (\textit{Parhyale hawaiensis}) over several days. We have here the first 10 time-points, spreading over a bit more than 1 hour.  Three views were acquired that generated a source each:
 \begin{myitemize}
