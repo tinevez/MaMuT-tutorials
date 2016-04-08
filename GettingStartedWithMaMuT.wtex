@@ -271,7 +271,7 @@ The spot coloring uses the notion of \emph{numerical features}. In MaMuT, and as
 
 By default, the range of the color scale is taken from the minimal to the maximal feature value. This can be changed by double-clicking on the \textbf{Set color by}, which will bring a window where you can set the min and max manually. 
 
-\screenshotC{MaMuT_ConfigureFeatureRange.pdf}
+\screenshotB{MaMuT_ConfigureFeatureRange.pdf}
 
 
 
