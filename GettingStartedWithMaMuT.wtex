@@ -61,7 +61,7 @@
 % Less space when we make bullet lists.
 \newenvironment{myitemize}
 { \begin{itemize}
-    \setlength{\itemsep}{0pt}
+    \setlength{\itemsep}{2pt}
     \setlength{\parskip}{0pt}
     \setlength{\parsep}{0pt}     }
 { \end{itemize}                  } 
@@ -83,7 +83,7 @@ __TOC__
 </wiki>
 
 \tableofcontents
-
+\newpage
 
 
 \section{Installation.}
