@@ -220,7 +220,7 @@ Navigating through the data in space and time uses the mouse and keyboard in a s
 \begin{myitemize}
 	\item \keys{N} Move to the previous time-point.
 	\item \keys{M} Move to the next time-point.
-	\item \keys{[} Jump to the previous time step.
+	\item \keys{[} Jump to the previous time step (explained below).
 	\item \keys{]} Jump to the next time step.
 \end{myitemize}
 
@@ -352,6 +352,27 @@ Try to use the auto-linking mode to create the cell lineage of the dividing cell
 \screenshotB{MaMuT_DesiredTracking_2.PNG}
 
 At this stage, your first track has two branches: the first cell at t=0 divides into two daughters, and each daughter makes a branch in the track. You do not have to specify to what track you want to branch from. Tracks are automatically merged and split when you add or remove links. The only editing you have to do is at the link level, and track are discovered from the spots connected by the links you created.
+
+
+\subsection{Step-wise time browsing and sparse annotations.}
+%----------------------------------------------------------
+
+MaMuT is built as an application for the annotation of large images immediately after their acquisition, and help build the first experimental results quickly. With modern, automated and fast live-sample microscopy, it is possible to generate a movie with high temporal resolution over a very long time. This is the case of the data we use for this tutorial, though we only work on the first 10 time-points. Nonetheless, you can see that at this stage, the cells move little from one frame to another. You could jump by steps of 5 frames, and still be able to identify the cell you tracked over time. 
+
+MaMuT has step-wise time browsing commands to just do that. The keyboard shortcut to do this are:
+\begin{myitemize}
+	\item \keys{[} Jump to the previous time step.
+	\item \keys{]} Jump to the next time step.
+\end{myitemize}
+By default, the viewer will jump to time-points multiples of 5: 0, 5, 10, \etc.  You can set what is the time step in the \smallimg{Icon_TrackMate.png} \textbf{Annotation} tab of the main GUI window, under the \textbf{Stepwise time browsing} field.
+
+If you are on a time-point not a multiple of the time-step, the next key-press will move to the closest multiple. The goal of these commands is to quickly generate a lineage that extends deeply in time by skipping some frames. But the time-points we reach with these commands are always the same multiples, so the annotated frames are all the same when using the stepwise time browsing. 
+
+Below is an example from an actual annotation, peeking ahead the lineage visualizer we will describe in the next section. Inn this view , cells are arranged by lineage, time running from top to bottom. Time-points are lines of alternating color. You can see that except when cells are dividing or when there is an ambiguity, this user only annotated time-points multiples of 5. This leads to a sparser annotation, generated faster.
+
+\screenshotB{MaMuT_TrackSchemeStepwiseTimeBrowsing.png}
+
+
 
 
 \subsection{Display settings for tracks.}
@@ -561,7 +582,7 @@ Notice that the TrackScheme display of this new track is somewhat unsatisfactory
 \subsection{Linking spots with drag and drop.}
 %---------------------------------------------
 
-Another way to create single links is to enable the drag-and-drop linking mode. In the \TrackScheme toolbar, click on the greyed-out \smallimg{Icon_connect.png} \textbf{Toggle linking} button.
+Another way to create single links is to enable the drag-and-drop linking mode. In the \TrackScheme toolbar, click on the grayed-out \smallimg{Icon_connect.png} \textbf{Toggle linking} button.
 
 Now move over any cell in one track. As you do, the cell gets highlighted with a green square. If you click and drag from this cell, a new link (in magenta) will emerge. Release it on any cells to create a link between the source and the target. 
 
@@ -620,7 +641,7 @@ If you follow the case depicted above, the semi-automatic tracking does a mistak
 
 \noindent This gives us an opportunity to explain how does the semi-automatic tracking works and what are its limitations.
 
-The semi-automatic tracking starts from a single cell in the selection. It inspects a neighbourhood centered on this cell, but in the next time-point. The neighbourhood is  filtered by a Laplacian-of-Gaussian filter, tuned with the initial cell radius, and candidate cells are generated from the maxima in the filtered image. The filtered pixel-value of these maxima are used as a quality measure for candidate cell. The quality value is higher if the cell in the raw image is bright, and of radius similar to that of the initial cell.
+The semi-automatic tracking starts from a single cell in the selection. It inspects a neighborhood centered on this cell, but in the next time-point. The neighborhood is  filtered by a Laplacian-of-Gaussian filter, tuned with the initial cell radius, and candidate cells are generated from the maxima in the filtered image. The filtered pixel-value of these maxima are used as a quality measure for candidate cell. The quality value is higher if the cell in the raw image is bright, and of radius similar to that of the initial cell.
 
 Amongst these candidates, only those who have a quality higher than a fraction of the initial cell are retained. You set this parameter using the \texttt{Quality threshold} parameter in the \textbf{Semi-automatic tracking panel}. Only candidates with a quality larger than the quality of the initial cell times this threshold will be retained. Cells that are placed manually do not have a quality value (it shows up as -1 if you query it), so all the candidates cells are automatically accepted.
 
@@ -628,7 +649,7 @@ Candidates are then filtered by distance to the initial cell. Candidates that ar
 
 Then, amongst all the candidate cells that remain, the one with the largest quality value is accepted as a successor and linked to the initial cell. The process is then reiterated using the newly found cell as initial cell. The parameter \texttt{Max nFrames} allows to define a maximal number of times (and as such, of time-points) we iterate.
 
-In our case, the error made at the time-point 7 was because there was a very bright cell that appeared in the neighbourhood. Even if it was farther than the right candidate, it was within the \texttt{Distance tolerance} bound and was deemed as a sucessor. On this demo dataset, the temporal resolution is excellent, and the cells do not move much from one frame to another. A way to prevent the error we had would be to restrict the \texttt{Distance tolerance} to for instance 1.2 radius.
+In our case, the error made at the time-point 7 was because there was a very bright cell that appeared in the neighborhood. Even if it was farther than the right candidate, it was within the \texttt{Distance tolerance} bound and was deemed as a successor. On this demo dataset, the temporal resolution is excellent, and the cells do not move much from one frame to another. A way to prevent the error we had would be to restrict the \texttt{Distance tolerance} to for instance 1.2 radius.
 
 As we just saw, the semi-automatic tracking is very local and does not use nor derive any prior information on cell movements. It simple tries to find the best successor of a single cell, neglecting all the other cells. As such, it must be considered as a strongly suboptimal tracking method, whose goal is strictly to assist manual annotation. Alternating between semi-automatic tracking and manual annotation (\eg using the auto-linking mode) when the semi-automatic tracking fails can generate deep lineages quickly.
 
@@ -665,7 +686,7 @@ Once you have them, go the third tab in the main GUI window, called \smallimg{Ic
 
 \screenshotA{MaMuT_ExportTrackStack.PNG}
 
-The dialog that pops let you choose first the source that will be resliced, in the \texttt{Target source} menu. Here we picked the first one.  There is an important gotcha with the source selection and viewer orientation. The capture always uses the source intrinsic orientation. It will always capture Z-planes of the chosen source, irrespective of the view orientation in the MaMuT viewer. So if you capture the same track with two different sources, you might have very different results. The \texttt{Image size} field determines the size of the data exported, in units of the radius of the first select spot. Finally, the \texttt{Dimensionality} radio button lets you chose between exporting a 3D volume or just a single slice centered on the spot. In the example above, we generated the 3D volume following the track 'A', and on the left image, generated its maximal intensity projection.
+The dialog that pops let you choose first the source that will be resliced, in the \texttt{Target source} menu. Here we picked the first one.  There is an important gotcha with the source selection and viewer orientation. The capture always uses the source intrinsic orientation. It will always capture Z-planes of the chosen source, irrespective of the view orientation in the MaMuT viewer. So if you capture the same track with two different sources, you might have very different orientation. The \texttt{Image size} field determines the size of the data exported, in units of the radius of the first select spot. Finally, the \texttt{Dimensionality} radio button lets you chose between exporting a 3D volume or just a single slice centered on the spot. In the example above, we generated the 3D volume following the track 'A', and on the left image, generated its maximal intensity projection.
 
 This command really reads into the raw data, and therefore generate ImageJ stacks that have the same data representation (8-bit, 16-bit, \etc) that of the raw data. This can be very useful for subsequent analysis.
 
