@@ -67,6 +67,22 @@
 { \end{itemize}                  } 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \title{Getting started with MaMuT.}
 \author{Tobias Pietzsch \& Jean-Yves Tinevez}
 
@@ -695,6 +711,41 @@ The dialog that pops let you choose first the source that will be resliced, in t
 This command really reads into the raw data, and therefore generate ImageJ stacks that have the same data representation (8-bit, 16-bit, \etc) that of the raw data. This can be very useful for subsequent analysis.
 
 
+
+
+\section{Customizing MaMuT viewer key-bindings.}
+%-----------------------------------------------
+
+
+
+\subsection{The \texttt{mamut.properties} file.}
+%-----------------------------------------------
+
+
+The key-bindings used in the MaMuT viewer can be customized through a text file, that allow you to remap any command to any key. To so, create a text file named \texttt{mamut.properties} in the \texttt{Fiji.app} folder (where the \texttt{plugins} and \texttt{jars} folders are). This file must follow this syntax example:
+
+\begin{verbatim}
+A=add spot
+ENTER=add spot
+D=delete spot
+E=increase spot radius
+Q=decrease spot radius
+shift\ E=increase spot radius a lot
+shift\ Q=decrease spot radius a lot
+control\ E=increase spot radius a bit
+control\ Q=decrease spot radius a bit
+...
+\end{verbatim}
+
+It follows the syntax \texttt{key=command}, one per line. Modifier keys such as \keys{Control} and \keys{Shift} are specified by prepending the key with their name, separated by a space escaped with a backslash '\textbackslash\ '. Spaces in commands do not need to be escaped. The dash \# charachter at the beginning of a line is used to insert comments. 
+
+An example of such a file can be found \wikilink{Example mamut.properties file}{here}.
+
+
+\subsection{Available commands.}
+%-------------------------------
+
+Here is a list of all available commands.
 
 
 <latex>
