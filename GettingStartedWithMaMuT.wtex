@@ -6,9 +6,7 @@
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-
-% Smaller font for teletype (texttt)
-\usepackage{courier}
+\renewcommand{\ttdefault}{lmtt}       % use lmtt for teletype family
 
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -43,7 +41,7 @@
 
 % Small font in verbatime environment.
 \makeatletter
-\def\verbatim{\scriptsize\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+\def\verbatim{\small\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
 \makeatother
 
 % Small images in text (for e.g. small icon).
