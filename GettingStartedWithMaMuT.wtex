@@ -748,6 +748,44 @@ An example of such a file can be found \wikilink{Example mamut.properties file}{
 
 Here is a list of all available commands.
 
+<latex>
+\vspace{-2mm}
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+\newcommand\tablecell[2][&]{#2 #1}
+</latex>
+
+<wiki>
+{| border="1" style="border-collapse:collapse;"
+</wiki>%
+<latex>
+{
+%\setlength{\extrarowheight}{5pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{center}
+\begin{tabular}{ | p{.3\textwidth - 2\tabcolsep} | p{.7\textwidth - 2\tabcolsep} |}
+    \hline
+</latex>
+  \tablecell{\keys{A}}
+  \tablecell[\\]{Test}
+  \hline
+%
+  \tablecell{\keys{B}}
+  \tablecell[\\]{Test}
+  \hline
+%
+  \tablecell{\keys{C}}
+  \tablecell[\\]{Test}
+<latex>
+  \hline
+\end{tabular}
+\end{center}
+}
+</latex>
+<wiki>
+|}
+
+</wiki>
 
 <latex>
 \end{document}
