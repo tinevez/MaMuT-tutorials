@@ -21,6 +21,7 @@
 \usepackage{hyperref}
 \input{tikzstyles}
 \usepackage{subfig}
+\usepackage{longtable}
 
 % Put a dot after section number.
 \usepackage{secdot}
@@ -763,22 +764,126 @@ Here is a list of all available commands.
 %\setlength{\extrarowheight}{5pt}
 \renewcommand{\arraystretch}{1.5}
 \begin{center}
-\begin{tabular}{ | p{.3\textwidth - 2\tabcolsep} | p{.7\textwidth - 2\tabcolsep} |}
+\begin{longtable}{ | p{.5\textwidth - 2\tabcolsep} | p{.5\textwidth - 2\tabcolsep} |}
     \hline
 </latex>
-  \tablecell{\keys{A}}
-  \tablecell[\\]{Test}
+  \tablecell{\texttt{add spot}}
+  \tablecell[\\]{Add a spot at mouse location. 
+  
+  If the \texttt{auto-linking} mode is on, also link it with the spot previously in the selection, and set the newly added spot to be the current selection.}
   \hline
 %
-  \tablecell{\keys{B}}
-  \tablecell[\\]{Test}
+  \tablecell{ \texttt{delete spot}}
+  \tablecell[\\]{Delete the spot at mouse location.}
   \hline
 %
-  \tablecell{\keys{C}}
-  \tablecell[\\]{Test}
+  \tablecell{\texttt{increase spot radius}}
+  \tablecell[\\]{Increase the spot radius at mouse location by 10\%.}
+  \hline
+%
+  \tablecell{\texttt{increase spot radius a lot}}
+  \tablecell[\\]{Increase the spot radius at mouse location by 100\%.}
+  \hline
+%
+  \tablecell{\texttt{increase spot radius a bit}}
+  \tablecell[\\]{Increase the spot radius at mouse location by 1\%.}
+  \hline
+%
+  \tablecell{\texttt{decrease spot radius}}
+  \tablecell[\\]{Decrease the spot radius at mouse location by 9.10\%.}
+  \hline
+%
+  \tablecell{\texttt{decrease spot radius a lot}}
+  \tablecell[\\]{Decrease the spot radius at mouse location by 50\%.}
+  \hline
+%
+  \tablecell{\texttt{decrease spot radius a bit}}
+  \tablecell[\\]{Decrease the spot radius at mouse location by 1\%.}
+  \hline
+%
+
+  \tablecell{\texttt{toggle link}}
+  \tablecell[\\]{Add / Remove a link between two spots in the selection.}
+  \hline
+%
+  \tablecell{\texttt{toggle linking mode}}
+  \tablecell[\\]{Toggle the \texttt{auto-linking} mode.}
+  \hline
+%
+  \tablecell{\texttt{semi-auto tracking}}
+  \tablecell[\\]{Launch semi-automatic tracking from the cells currently selected.}
+  \hline
+%
+  \tablecell{\texttt{help}}
+  \tablecell[\\]{Display the help window.}
+  \hline
+%
+  \tablecell{\texttt{brightness settings}}
+  \tablecell[\\]{Toggle the brightness settings dialog.}
+  \hline
+%
+  \tablecell{\texttt{visibility and grouping}}
+  \tablecell[\\]{Toggle the visibility and grouping settings dialog.}
+  \hline
+%
+  \tablecell{\texttt{toggle interpolation}}
+  \tablecell[\\]{Toggle interpolation method for pixel drawing between \texttt{Nearest neighbor} and {Tri-linear interpolation}.}
+  \hline
+%
+  \tablecell{\texttt{toggle fused mode}}
+  \tablecell[\\]{Toggle fused or single-source display mode.}
+  \hline
+%
+  \tablecell{\texttt{toggle grouping}}
+  \tablecell[\\]{Toggle grouping mode.}
+  \hline
+%
+  \tablecell{\texttt{toggle source visibility X}}
+  \tablecell[\\]{Replace X by a digit from 0 to 9. Toggle the visibility of the source X.}
+  \hline
+%
+  \tablecell{\texttt{align XY plane}}
+  \tablecell[\\]{Change the current view to align it with the XY planes of the source currently active.}
+  \hline
+%
+  \tablecell{\texttt{align XZ plane}}
+  \tablecell[\\]{Change the current view to align it with the XZ planes of the source currently active.}
+  \hline
+%
+  \tablecell{\texttt{align ZY plane}}
+  \tablecell[\\]{Change the current view to align it with the ZY planes of the source currently active.}
+  \hline
+%
+  \tablecell{\texttt{next timepoint}}
+  \tablecell[\\]{Move to the next time-point.}
+  \hline
+%
+  \tablecell{\texttt{previous timepoint}}
+  \tablecell[\\]{Move to the previous time-point.}
+  \hline
+%
+  \tablecell{\texttt{step time forward}}
+  \tablecell[\\]{Jump to the next time step.}
+  \hline
+%
+  \tablecell{\texttt{step time backward}}
+  \tablecell[\\]{Jump to the previous time step.}
+  \hline
+%
+  \tablecell{\texttt{set bookmark}}
+  \tablecell[\\]{Store a bookmark for the current view.}
+  \hline
+%
+  \tablecell{\texttt{go to bookmark}}
+  \tablecell[\\]{Move the view to the specified bookmark.}
+  \hline
+%
+  \tablecell{\texttt{got to bookmark orientation}}
+  \tablecell[\\]{Orient the view to the specified bookmark orientation.}
+
 <latex>
   \hline
-\end{tabular}
+\end{longtable}
 \end{center}
 }
 </latex>
