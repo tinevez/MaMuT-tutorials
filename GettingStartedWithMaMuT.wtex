@@ -247,10 +247,12 @@ Navigating through the data in space and time uses the mouse and keyboard in a s
 There is a fantastic feature in the \bdv that you will find here called \textbf{bookmarks}. They let you store a position and orientation in space as bookmarks. You can later call them again. To use them:
 
 \begin{myitemize}
-	\item First press \keys{Shift-G} 
+	\item First press \keys{Shift-B} then any other key to bookmark the current view position.
+	\item Pressing \keys{B} then the bookmark's key to  restore the view position.
+	\item \keys{O} does the same things, but only restore the bookmark orientation, and does not translate to its position.
 \end{myitemize}
 
-
+You can many bookmarks, all identified by the key you press after the bookmark command.
 
 
 \subsection{Configuring the source visibility and display.}
