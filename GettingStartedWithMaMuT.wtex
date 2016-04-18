@@ -244,6 +244,13 @@ Navigating through the data in space and time uses the mouse and keyboard in a s
 	\item \keys{]} Jump to the next time step.
 \end{myitemize}
 
+There is a fantastic feature in the \bdv that you will find here called \textbf{bookmarks}. They let you store a position and orientation in space as bookmarks. You can later call them again. To use them:
+
+\begin{myitemize}
+	\item First press \keys{Shift-G} 
+\end{myitemize}
+
+
 
 
 \subsection{Configuring the source visibility and display.}
