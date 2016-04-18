@@ -284,7 +284,7 @@ Move the mouse pointer over the cell you want to annotation, and press \keys{A}.
 	\item \keys{A} to add a spot at the mouse location.
 	\item \keys{D} to delete the spot under the mouse location.
 	\item \keys{Q} / \keys{E} to decrease / increase the spot radius. Use \keys{Shift} / \keys{Control} to change the radius by a greater / smaller amount.
-	\keys{Space} is used to move a spot in the XY view plane: put the mouse pointer inside the spot you want to move, then press and hold space while moving the mouse. The spot will follow your mouse until you release the \keys{Space} key.
+	\item \keys{Space} is used to move a spot in the XY view plane: put the mouse pointer inside the spot you want to move, then press and hold space while moving the mouse. The spot will follow your mouse until you release the \keys{Space} key.
 \end{myitemize}
 
 Spots represents point of interest (in our case, cells) under the shape of a sphere. You can change the sphere time-point, location and radius, but that's it. There is no object contour in MaMuT. Spots are drawn as circles in the MaMuT viewer, with the radius of their intersection with the view XY plane. If they are not intersecting with the view plane, they are drawn as small dots, as you can see by moving along Z a bit.
@@ -580,7 +580,7 @@ Make sure you have a TrackScheme window open, a MaMuT viewer window open, and mo
 
 Normally, TrackScheme only displays the spots that belong in a track. Lonely spots that are not linked to anything when you launch TrackScheme are not shown. The spots you create after TrackScheme are however stacked under this special column. From there, you can attach them to an existing track or create a new one.
 
-Here is a way to do it. In TrackScheme, select all the spots in the unlaid column \keys{Left-Mousedrag}. \keys{Right-click} somewhere in TrackScheme to make the popup menu appear. One of the menu item should be something like \texttt{Link 10 spots}. Choose this one. Each spots is then linked to the next one, frame by frame, and the links should appear in TrackScheme and in the MaMuT viewer. You just created a new track.
+Here is a way to do it. In TrackScheme using \keys{Left-Mousedrag} select all the spots in the unlaid column. \keys{Right-click} somewhere in TrackScheme to make the popup menu appear. One of the menu item should be something like \texttt{Link 10 spots}. Choose this one. Each spots is then linked to the next one, frame by frame, and the links should appear in TrackScheme and in the MaMuT viewer. You just created a new track.
 
 
 
@@ -764,7 +764,7 @@ Here is a list of all available commands.
 %\setlength{\extrarowheight}{5pt}
 \renewcommand{\arraystretch}{1.5}
 \begin{center}
-\begin{longtable}{ | p{.5\textwidth - 2\tabcolsep} | p{.5\textwidth - 2\tabcolsep} |}
+\begin{longtable}{ | p{.4\textwidth - 2\tabcolsep} | p{.6\textwidth - 2\tabcolsep} |}
     \hline
 </latex>
   \tablecell{\texttt{add spot}}
@@ -827,7 +827,7 @@ Here is a list of all available commands.
   \hline
 %
   \tablecell{\texttt{toggle interpolation}}
-  \tablecell[\\]{Toggle interpolation method for pixel drawing between \texttt{Nearest neighbor} and {Tri-linear interpolation}.}
+  \tablecell[\\]{Toggle interpolation method for pixel drawing between \texttt{Nearest neighbor} and \texttt{Tri-linear interpolation}.}
   \hline
 %
   \tablecell{\texttt{toggle fused mode}}
