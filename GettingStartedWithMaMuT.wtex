@@ -963,6 +963,20 @@ Here is a list of all available commands.
 
 </wiki>
 
+
+\subsection{Default key-bindings.}
+%---------------------------------
+
+Here we recapitulate the default key-bindings for the MaMuT viewer. This image is also included in the help window of the MaMuT viewer.
+
+\screenshotB{MamutKeyboardLayout.pdf}
+
+
+
+
+
+
+
 <latex>
 \end{document}
 </latex>
