@@ -1183,6 +1183,95 @@ Here we recapitulate the default key-bindings for the MaMuT viewer. This image i
 
 
 
+\section{\TrackScheme key-bindings.}
+
+\TrackScheme key-bindings cannot be remapped like for the MaMuT viewer. We list them here.
+
+
+<latex>
+\vspace{-2mm}
+</latex>
+
+<wiki>
+{| border="1" style="border-collapse:collapse;"
+</wiki>%
+<latex>
+{
+%\setlength{\extrarowheight}{5pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{center}
+\begin{longtable}{ | p{.3\textwidth - 2\tabcolsep} | p{.7\textwidth - 2\tabcolsep} |}
+	\hline
+</latex>
+  \tablecell{ \keys{F2} }
+  \tablecell[\\]{Edit current spot name.}
+  \hline
+%
+  \tablecell{ \keys{Delete} }
+  \tablecell[\\]{Delete the current selection. }
+  \hline
+%
+  \tablecell{ \keys{Home}}
+  \tablecell[\\]{Center view on the first spot in current selection. }
+  \hline
+%
+  \tablecell{ \keys{End}}
+  \tablecell[\\]{Center view on the last spot in current selection. }
+  \hline
+%
+  \tablecell{ \keys{{+}} \& \keys{=} }
+  \tablecell[\\]{Zoom in. }
+  \hline
+%
+  \tablecell{ \keys{-} }
+  \tablecell[\\]{Zoom out. }
+  \hline
+%
+  \tablecell{ \keys{Shift+=} }
+  \tablecell[\\]{Reset zoom. }
+  \hline
+%
+  \tablecell{ \keys{1} \keys{2} ... \keys{9} on the keypad }
+  \tablecell[\\]{Pan the view. }
+  \hline
+%
+  \tablecell{ \keys{Control+A}}
+  \tablecell[\\]{Select all. }
+  \hline
+%
+  \tablecell{ \keys{Control+Shift+A}}
+  \tablecell[\\]{Clear selection. }
+  \hline
+%
+  \tablecell{ \keys{\textuparrow} / \keys{\textdownarrow} }
+  \tablecell[\\]{Move to the previous / next spot in time, within the current track. }
+  \hline
+%
+  \tablecell{ \keys{\textleftarrow} / \keys{\textrightarrow} }
+  \tablecell[\\]{Move to the previous / next sibling, within the current track. Sibling are spots that belong to the same track and to the same time-point. For instance the two spots of two sister daughter cells. }
+  \hline
+%
+  \tablecell{ \keys{Page up} / \keys{Page down} }
+  \tablecell[\\]{Jump to the the previous / next track. }
+  \hline
+%
+  \tablecell{ \keys{Shift+Mousedrag} }
+  \tablecell[\\]{Pan the view. }
+  \hline
+%
+  \tablecell{ \keys{Shift+Mousewheel} }
+  \tablecell[\\]{Zoom in / out. }
+  \hline
+
+<latex>
+  \hline
+\end{longtable}
+\end{center}
+}
+</latex>
+<wiki>
+|}
+</wiki>
 
 
 
