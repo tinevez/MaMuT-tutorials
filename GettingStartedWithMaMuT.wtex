@@ -56,8 +56,9 @@
   }%
 }
 
-% Properly hyphen TrackScheme
+% Properly hyphen TrackMate & TrackScheme
 \newcommand\TrackScheme[0]{Track\-Scheme\xspace}
+\newcommand\TrackMate[0]{Track\-Mate\xspace}
 
 % Less space when we make bullet lists.
 \newenvironment{myitemize}
@@ -86,6 +87,10 @@
  escapebegin={\lstsmallmath}, escapeend={\lstsmallmathend}
 }
 
+% Tables in the Wiki and LaTeX
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+\newcommand\tablecell[2][&]{#2 #1}
 
 
 
@@ -748,6 +753,7 @@ As we just saw, the semi-automatic tracking is very local and does not use nor d
 
 
 
+
 \section{Exporting images and reslicing data.}
 %---------------------------------------------
 
@@ -782,6 +788,212 @@ Once you have them, go the third tab in the main GUI window, called \smallimg{Ic
 The dialog that pops let you choose first the source that will be resliced, in the \texttt{Target source} menu. Here we picked the first one.  There is an important gotcha with the source selection and viewer orientation. The capture always uses the source intrinsic orientation. It will always capture Z-planes of the chosen source, irrespective of the view orientation in the MaMuT viewer. So if you capture the same track with two different sources, you might have very different orientation. The \texttt{Image size} field determines the size of the data exported, in units of the radius of the first select spot. Finally, the \texttt{Dimensionality} radio button lets you chose between exporting a 3D volume or just a single slice centered on the spot. In the example above, we generated the 3D volume following the track 'A', and on the left image, generated its maximal intensity projection.
 
 This command really reads into the raw data, and therefore generate ImageJ stacks that have the same data representation (8-bit, 16-bit, \etc) that of the raw data. This can be very useful for subsequent analysis.
+
+
+
+
+
+\section{Numerical features.}
+%----------------------------
+
+We already skimed over  numerical features when we discussed the display settings for spots and tracks. Numerical features are scalar values associated to a spot, a link or a track that measures some useful value. For instance, the X position of a spot, the displacement across a link, and the number of split events in a track. The MaMuT feature system is direcly imported from \TrackMate, but only contains a subset of feature definitions from \TrackMate and a few ones related to cell lineaging. 
+
+Numerical features are automatically kept in sync with the annotation. As soon as you add an annotation or modify and delete and existing one, the recalculation of features is triggered. As mentioned above however, the range display on the main GUI window is not, and you need to click over it to refresh the displayed colormap and its range. 
+
+The next paragraphs list and document the current features in MaMuT.
+
+
+\subsection{Spot features.}
+%--------------------------
+
+
+<latex>
+\vspace{-2mm}
+</latex>
+
+<wiki>
+{| border="1" style="border-collapse:collapse;"
+</wiki>%
+<latex>
+{
+%\setlength{\extrarowheight}{5pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{center}
+\begin{longtable}{ | p{.3\textwidth - 2\tabcolsep} | p{.7\textwidth - 2\tabcolsep} |}
+	\hline
+</latex>
+  \tablecell{\texttt{Quality}}
+  \tablecell[\\]{The quality of the spot detection. This feature is normally created by spot detectors (such as the one used in the semi-automatic tracking), and relates to how likely the spot is to be relevant. By convention it is a positive number, and high values indicate good detection. Spot created manually have all a quality value equal to -1. }
+ \hline
+%
+  \tablecell{ \texttt{X}, \texttt{Y} \& \texttt{Z}}
+  \tablecell[\\]{The spot location in the global common coordinate system. Units are whatever physical units used when creating the \bdv file.}
+  \hline
+%
+  \tablecell{ \texttt{T}}
+  \tablecell[\\]{The spot time in physical unit. Units are whatever time units used when creating the \bdv file.}
+  \hline
+%
+  \tablecell{ \texttt{Frame}}
+  \tablecell[\\]{The time-point in which the spot appears.}
+  \hline
+%
+  \tablecell{ \texttt{Radius}}
+  \tablecell[\\]{The spot radius, in physical units.}
+  \hline
+%
+  \tablecell{ \texttt{Source ID}}
+  \tablecell[\\]{The index of the source view in which the spot was created. For instance, if you created the spot with the first source active, then its source ID is 0.}
+  \hline
+%
+  \tablecell{ \texttt{Cell division time}}
+  \tablecell[\\]{This is a special feature made for cell lineaging. It is expressed in time units how long a the cell tracked by this spot takes to divide. The time is measured from the mother division to the daughter division, so the cell division time value will be the same for all the spots of a branch in a track. The branches that do not start with a cell division or do not finish by a cell division are excluded from calculation, and the value of spots that belong to such branches defaults to \texttt{NaN}. This is why if you use this feature in with our demo dataset to color spots, they will all be dark gray, as none of our tracks follow a full cell cycle.}
+  \hline
+%
+  \tablecell{ \texttt{Manual spot color}}
+  \tablecell[\\]{This is a special feature, that is not automatically calculated. You can assign manually a color to a set of spots. To do so, select some spots and in \TrackScheme, right-click to show the pop-up menu. The menu item \texttt{Manual color for X spots} will let you set the selected spot color. This color will then be used in the views if you select the \texttt{Manual color} item in the \textbf{Set color by} menu in the spot panel of the main GUI window. Manual colors are saved to and retrieved from a MaMuT file.}
+  \hline
+ 
+<latex>
+  \hline
+\end{longtable}
+\end{center}
+}
+</latex>
+<wiki>
+|}
+</wiki>
+
+
+
+
+\subsection{Link features.}
+%--------------------------
+
+
+<latex>
+\vspace{-2mm}
+</latex>
+
+<wiki>
+{| border="1" style="border-collapse:collapse;"
+</wiki>%
+<latex>
+{
+%\setlength{\extrarowheight}{5pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{center}
+\begin{longtable}{ | p{.3\textwidth - 2\tabcolsep} | p{.7\textwidth - 2\tabcolsep} |}
+	\hline
+</latex>
+  \tablecell{ \texttt{Spot source ID} \& \texttt{Spot target ID}}
+  \tablecell[\\]{The ID of the spot that is the source, respectively the target, of this link. In MaMuT and \TrackMate, links have a direction, that follows time.}
+  \hline
+%
+  \tablecell{ \texttt{Link cost}}
+  \tablecell[\\]{The cost associated to the link. This value is normally set by particle-linking algorithms, that can create links between spots following minimization of global cost. Links created manually get a default value of -1. }
+  \hline
+%
+  \tablecell{ \texttt{Velocity}}
+  \tablecell[\\]{The velocity calculated between the source and target spots, in physical units. }
+  \hline
+%
+  \tablecell{ \texttt{Displacement}}
+  \tablecell[\\]{The displacement calculated between the source and target spots, in physical units. }
+  \hline
+%
+  \tablecell{ \texttt{Manual edge color}}
+  \tablecell[\\]{Life for manual spot color, but for links.}
+  \hline
+ 
+<latex>
+  \hline
+\end{longtable}
+\end{center}
+}
+</latex>
+<wiki>
+|}
+</wiki>
+
+
+
+
+
+\subsection{Track features.}
+%--------------------------
+
+
+<latex>
+\vspace{-2mm}
+</latex>
+
+<wiki>
+{| border="1" style="border-collapse:collapse;"
+</wiki>%
+<latex>
+{
+%\setlength{\extrarowheight}{5pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{center}
+\begin{longtable}{ | p{.3\textwidth - 2\tabcolsep} | p{.7\textwidth - 2\tabcolsep} |}
+	\hline
+</latex>
+  \tablecell{ \texttt{Track index} \& \texttt{Track ID}}
+  \tablecell[\\]{The track index and ID. Track index runs from 0 to the number of tracks. Track IDs are unique numbers generated for every new track.}
+  \hline
+%
+  \tablecell{ \texttt{Duration of track}}
+  \tablecell[\\]{The track duration in time units. Track duration is calculated from the earliest to the latest spot in time in the track. }
+  \hline
+%
+  \tablecell{ \texttt{Track start} \& \texttt{Track stop}}
+  \tablecell[\\]{The track start and stop times. They are measured at the earliest and latest spots in the track. }
+  \hline
+%
+  \tablecell{ \texttt{Track displacement}}
+  \tablecell[\\]{The track displacement in physical units, calculated from the earliest to the latest spot in time in the track. Careful, this is not the maximal displacement in the track, just the distance between the first and last spot. }
+  \hline
+%
+  \tablecell{ \texttt{Number of spots in track}}
+  \tablecell[\\]{The number of spots in the track.}
+  \hline
+%
+  \tablecell{ \texttt{Number of gaps}}
+  \tablecell[\\]{The number of gap events in the track. A gap happens when a link is made between two spots separated by more than one frame.}
+  \hline
+%
+  \tablecell{ \texttt{Longest gap}}
+  \tablecell[\\]{The size of the largest gap in the track, in number of frames.}
+  \hline
+%
+  \tablecell{ \texttt{Number of split events}}
+  \tablecell[\\]{The number of split events in the track. A split event happens when a spot is the source to more than one link (but the target of at most one link). For instance, a cell division gives rise to a split event with two outgoing links.}
+  \hline
+ %
+  \tablecell{ \texttt{Number of merge events}}
+  \tablecell[\\]{The number of merge events in the track. A merge event happens when a spot is the target to more than one link (but the source to at most one link). When several cell merges into one gives rise to a merge event.}
+  \hline
+ %
+  \tablecell{ \texttt{Complex points}}
+  \tablecell[\\]{The number of complex points in the track. A complex point is a spot which the source to more than one link and the target of more than one link.}
+  \hline
+ %
+  \tablecell{ \texttt{Mean cell division time} \& \texttt{Std cell division time}}
+  \tablecell[\\]{The mean and standard deviation values of the \texttt{Cell division time} spot feature described above, averaged across track branches, and excluding undefined branch values.}
+  \hline
+
+<latex>
+  \hline
+\end{longtable}
+\end{center}
+}
+</latex>
+<wiki>
+|}
+</wiki>
+
+
 
 
 
@@ -822,9 +1034,6 @@ Here is a list of all available commands.
 
 <latex>
 \vspace{-2mm}
-\newcommand{\specialcell}[2][c]{%
-  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
-\newcommand\tablecell[2][&]{#2 #1}
 </latex>
 
 <wiki>
