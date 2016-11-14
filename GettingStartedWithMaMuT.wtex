@@ -38,6 +38,7 @@
 \newcommand\screenshotTikz[1]{\centerline{\includetikz{figures/#1}}}
 \newcommand\coloredlink[1]{\textcolor{blue!75!black}{\underline{\smash{#1}}}}
 \newcommand\wikilink[2]{\href{http://imagej.net/#1}{\coloredlink{#2}}}
+\newcommand\otherlink[2]{\href{#1}{\coloredlink{#2}}}
 \newcommand\TODO[1]{\textcolor{red}{#1}}
 
 % Small font in verbatime environment.
@@ -795,6 +796,1005 @@ This command really reads into the raw data, and therefore generate ImageJ stack
 
 
 
+
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%                        				MATLAB
+%----------------------------------------------------------------------------------------
+
+\section{Importing and analyzing TrackMate data in MATLAB.}
+%----------------------------------------------------------
+
+We document here the functions shipped with Fiji that allows for
+importing TrackMate data in MATLAB. These functions use amongst other
+things the MATLAB classes \texttt{table} and \texttt{digraph}, introduced respectively
+with versions R2013b and R2015b, so a recent version of MATLAB is
+required to use them. Also, end-users should have some notions of MATLAB
+and basic understanding of mathematical graphs to take full advantage of
+this documentation.
+
+For most tracking applications, importing tracking results is easy, as
+long as the tracks are linear tracks. If the tracks do not have split or
+merge events, then single tracks can be represented by a linear array,
+for instance containing the particle positions or indices. Things are
+much more complicated when a track can divide in two or more components,
+or inversely merge with another track. A track cannot be represented
+anymore by linear arrays. This is the case for TrackMate, as its data
+model permits split and merge events.
+
+Here we document the various ways of importing TrackMate data in MATLAB,
+how to deal with complex tracks and show examples of basic analysis and
+visualization of tracks in MATLAB.
+
+
+
+\subsection{Installation of TrackMate functions for MATLAB.}
+%-----------------------------------------------------------
+
+The Fiji application ships up to date MATLAB functions that - amongst
+other things - deal with TrackMate import. They are contained in the
+\texttt{scripts} folder of the \texttt{Fiji.app} installation:
+
+\begin{verbatim}
+   ls ~/Applications/Fiji.app/scripts
+\end{verbatim}
+
+We are interested in the five \texttt{trackmate*.m} and \texttt{importTrackMateTracks.m}
+functions. To make them available in your MATLAB sessions, you need to
+add the \texttt{scripts} folder to your MATLAB path.
+To do so, open the MATLAB path editor, and add the \texttt{scripts} folder to
+it. The way to do it is best explained on the
+\otherlink{http://mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html}{MATLAB documentation website}.
+
+Now check that the new functions are available from MATLAB:
+
+\begin{lstlisting}[language=matlab]
+>> which trackmateGraph
+\end{lstlisting}
+
+\begin{verbatim}
+/Users/tinevez/Development/Matlab/functions/jy/...
+         trackmate/trackmateGraph.m
+\end{verbatim}
+
+
+\subsection{The simple case of linear tracks.}
+%---------------------------------------------
+
+In the case where your application only uses for linear tracks, you don't
+need to deal with the aforementioned complexity and can rely on a simple
+array data structure.
+
+TrackMate has an action that exports data to a simplified XML file
+containing the track. For in the action menu and look for the action
+called \textbf{Export tracks to XML file}. This action will create a XML file
+with a simple nomenclature, that resembles this:
+
+\begin{verbatim}
+   <?xml version="1.0" encoding="UTF-8"?>
+   <Tracks nTracks="1959" spaceUnits="pixels" frameInterval="1.0" 
+			timeUnits="frames" generationDateTime="Wed, 22 Jun 2016 16:33:25" 
+			from="TrackMate v3.3.0">
+     <particle nSpots="10">
+       <detection t="0" x="1710.2" y="1015.7" z="1613.8" />
+       <detection t="1" x="1711.7" y="1017.4" z="1607.9" />
+       <detection t="2" x="1708.3" y="1015.6" z="1610.0" />
+       <detection t="3" x="1707.4" y="1012.3" z="1614.9" />
+       ... 
+\end{verbatim}
+
+\noindent Tracks are organized as \texttt{<particle>} element, and in each
+% \texttt{<particle>} a spot takes the form of a \texttt{<detection>}
+element, with T, X, Y and Z listed with their physical value.
+
+This simple file format emerged from the
+\otherlink{http://bioimageanalysis.org/track/}{ISBI Grand Challenge} on
+single-particle tracking. It is here to allow end-users to write simple
+import filters for other languages. But it is limited to linear tracks. Running the \textbf{Export tracks to XML file} action on data wither split and merge events will \textbf{silently fail} and generate a XML file that will generate errors later.
+
+Importing such a file in MATLAB is done via the \texttt{importTrackMateTracks}
+function:
+
+\begin{lstlisting}[language=matlab]
+>> file_path_tracks = 'Video_1_Tracks.xml';
+>> tracks = importTrackMateTracks(file_path_tracks);
+>> n_tracks = numel( tracks );
+>> fprintf('Found %d tracks in the file.\n', n_tracks)
+\end{lstlisting}
+
+\begin{verbatim}
+Found 55 tracks in the file.
+\end{verbatim}
+
+In MATLAB the tracks are stored in a cell array of matrices.
+
+\begin{lstlisting}[language=matlab]
+>> tracks( 1 )
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+    [48x4 double]
+\end{verbatim}
+
+Each track is a $N \times 4$ matrix of double, one line per detection. On a
+single line, the spot data is arranged as [T X Y Z ]:
+
+\begin{lstlisting}[language=matlab]
+>> tracks{1}(5, :)
+\end{lstlisting}
+
+
+\begin{verbatim}
+ans =
+
+    4.0000   80.7978   76.6681         0
+\end{verbatim}
+
+\noindent By default, time is reported in frame number, so it is an integer. Also,
+spots have always a Z coordinate, even if the tracking was made in 2D.
+The function \texttt{importTrackMateTracks} has two switches to change this
+behavior. For instance:
+
+\begin{lstlisting}[language=matlab]
+>> clipZ   = true; % Remove Z coordinates, if you know you can.
+>> scaleT  = true; % Use physical time for T. 
+>> tracks = importTrackMateTracks(file_path_tracks, clipZ, scaleT);
+>> tracks{1}(5, :)
+\end{lstlisting}
+
+\begin{verbatim}
+ans =
+
+    0.2400   80.7978   76.6681
+\end{verbatim}
+
+\noindent The data file we used for this section has a physical frame interval, so
+now T is in seconds. And since we clipped the Z coordinate, the tracks
+are made of $N \times 3$ matrices now. 
+
+The metadata is stored in the file, and can be accessed as a secondary
+output of the \texttt{import\-TrackMateTracks} function.
+
+\begin{lstlisting}[language=matlab]
+>> [ tracks, md ] = importTrackMateTracks(file_path_tracks, ...
+		clipZ, scaleT);
+>> md
+\end{lstlisting}
+
+\begin{verbatim}
+md = 
+
+       spaceUnits: 'µm'
+        timeUnits: 'sec'
+    frameInterval: 0.0600
+             date: 'Wed, 22 Jun 2016 16:55:20'
+           source: 'TrackMate v3.3.0'
+\end{verbatim}
+
+The data we used for this section came for the tracking of 
+\textit{Helicobacter pylori}, a pathogenic bacteria responsible 
+for ulcers amongst other things. Their movement resembles this:
+
+\begin{lstlisting}[language=matlab]
+>> figure 
+>> hold on
+>> c = jet(n_tracks);
+>> for s = 1 : n_tracks
+>>     x = tracks{s}(:, 2);
+>>     y = tracks{s}(:, 3);
+>>     plot(x, y, '.-', 'Color', c(s, :))   
+>> end
+>> axis equal
+>> xlabel( [ 'X (' md.spaceUnits ')' ] )
+>> ylabel( [ 'Y (' md.spaceUnits ')' ] )
+\end{lstlisting}
+
+\screenshotA{MATLAB_BacteriaTrajectories.pdf}
+
+
+
+\subsection{Importing the spot feature table.}
+%---------------------------------------------
+
+There are many limitations with the later approach. The first one being
+its inability to cope with complex tracks, as we said earlier. The second
+one being that we did not import the spot features (mean intensity,
+radius, etc) other than their position. To do so we have to move to more
+complex functions that directly interact with TrackMate data files. 
+
+The XML files are the ones in which TrackMate saves its tracking session,
+when you press the \texttt{Save} button on the GUI. Their first lines resemble
+this:
+
+\begin{verbatim}
+    <?xml version="1.0" encoding="UTF-8"?>
+         <TrackMate version="3.3.0">
+         ...    
+\end{verbatim}
+They are made of several XML elements, the most important one being the
+\texttt{Model}:
+
+\begin{verbatim}
+   <Model spatialunits="pixel" timeunits="sec">
+\end{verbatim}
+
+The example file we use here comes from the lineage of a \textit{C.elegans}
+embryo over the first 3 hours of development post first anaphase. It is
+made of four tracks: two for the polar bodies (PB1 and PB2), one for the
+AB lineage and one for the P1 lineage. The AB and P1 lineages take the
+shape of two tracks. In these tracks there are several cell divisions (5
+for the AB lineage) so they are not linear and the approach of the
+previous section will fail.
+
+\begin{lstlisting}[language=matlab]
+>> % C.elegans lineage TrackMate data file.
+>> file_path = '10-03-17-3hours.xml';
+\end{lstlisting}
+
+The function \texttt{trackmateSpots} will import the visible spots of this file
+as a MATLAB table. The \texttt{table} class is somewhat recent in MATLAB, so you
+need at least MATLAB v2013b to have this function working.
+
+The function basic syntax is the following:
+
+\begin{lstlisting}[language=matlab]
+>> [ spot_table, spot_ID_map ] = trackmateSpots( file_path );
+\end{lstlisting}
+ 
+\noindent We will speak about the second output argument \texttt{spot\_ID\_map} later. We
+retrieve it now, for the functions that load a TrackMate file in MATLAB
+can take quite some time to run, so you want to run them only once.
+
+There is another optional input argument we did not speak about here. You
+can pass as a second argument a cell array of strings containing the
+names of the features you want to import. If this list is empty or if the
+second argument is not present, all spot features are retrieved. Read the
+help of the \texttt{trackmateSpots} to learn more about its full syntax.
+
+The table returned contains all the spot features by default, and spots
+are listed by frame order:
+
+\begin{lstlisting}[language=matlab]
+>> spot_table( 1 : 6, { 'ID', 'name', 'FRAME' } )
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+     ID      name     FRAME
+    _____    _____    _____
+
+        0    'AB'     0    
+        1    'PB1'    0    
+        2    'P1'     0    
+        3    'PB2'    0    
+    47360    'PB1'    1    
+    47361    'PB2'    1    
+\end{verbatim}
+
+
+It is best to read the \texttt{table} documentation to take full advantage of
+it. Nonetheless, here is a few things we can do with it. The lineage was
+created with TrackMate, and the spot features we measured are imported
+with name and units:
+
+\begin{lstlisting}[language=matlab]
+>> % List a subset of features, there are 32 of them.
+>> feature_subset = [ 1, 2, 13, 17, 22, 23, 24 ];
+>>
+>> [   spot_table.Properties.VariableNames(feature_subset)
+>>     spot_table.Properties.VariableDescriptions(feature_subset)
+>>     spot_table.Properties.VariableUnits(feature_subset) ]
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+  Columns 1 through 3
+
+    'ID'         'name'         'ESTIMATED_DIAMETER' 
+    'Spot ID'    'Spot name'    'Estimated diameter'
+    ''           ''             'µm'            
+
+  Columns 4 through 7
+
+    'MEAN_INTENSITY'  'POSITION_X'  'POSITION_Y'  'POSITION_Z'
+    'Mean intensity'  'X'           'Y'           'Z'         
+    'Counts'          'µm'          'µm'          'µm'      
+\end{verbatim}
+
+Values can be accessed directly with the feature name:
+
+\begin{lstlisting}[language=matlab]
+>> t = spot_table.FRAME;
+>> t(10:16)
+\end{lstlisting}
+
+\begin{verbatim}
+ans =
+
+     2
+     2
+     2
+     3
+     3
+     3
+     3
+\end{verbatim}
+Values can then be used to slice through the table:
+
+\begin{lstlisting}[language=matlab]
+% All spots in frame 10:
+>> index = (t == 10);
+>> spot_table(index, feature_subset)
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+     ID       name     ESTIMATED_DIAMETER    MEAN_INTENSITY
+    _____    ______    __________________    ______________
+
+    51336    'P2'      5.5835                1943.2        
+    51337    'AB.a'    6.9765                  1374        
+    51339    'EMS'     5.0021                1223.4        
+    51340    'AB.p'    7.1779                1183.3        
+    51334    'PB1'      2.482                1949.4        
+    51335    'PB2'     4.4596                1729.9        
+	
+	    POSITION_X    POSITION_Y    POSITION_Z
+	    __________    __________    __________
+	
+	    55.868        36.022        18        
+	    18.094        15.977        19        
+	    42.042        24.312        19        
+	    31.325        37.146        22        
+	    10.353        9.9564        16        
+	    25.437        23.386        15        
+\end{verbatim}
+
+You can redisplay the spot cloud in MATLAB:
+
+\begin{lstlisting}[language=matlab]
+>> x = spot_table.POSITION_X;
+>> y = spot_table.POSITION_Y;
+>> z = spot_table.POSITION_Z;
+>>
+>> figure
+>> plot3(x, y, z, 'k.')
+>> axis equal
+>> units = char(spot_table.Properties.VariableUnits(22));
+>> xlabel( [ 'X (' units ')' ] )
+>> ylabel( [ 'Y (' units ')' ] )
+>> zlabel( [ 'Z (' units ')' ] )
+\end{lstlisting}
+
+\screenshotA{MATLAB_CelegansSpotCloud.pdf}
+ 
+\noindent Notice that there is no time information on this plot, nor track
+information. We just imported the spots so far, and there is not yet data
+on how spots are linked. 
+
+
+
+\subsection{Importing the edge track table.}
+%-------------------------------------------
+
+Edges - or links - are what assemble these spots in tracks. Each edge
+represents a link from a spot (the source spot) to another (the target
+spot). In TrackMate, edges are directed and oriented towards time: the
+target has spot always a FRAME value strictly larger than the source
+spot. Beyond this, there is no restrictions. A spot can be the source or
+target of many links or none.
+
+Edges have features too. These are values that make sense only for links,
+such as velocity. The edge features are imported using a function similar
+to the one for spots:
+
+
+\begin{lstlisting}[language=matlab]
+>> edge_map = trackmateEdges( file_path );
+\end{lstlisting}
+However here the data is not directly returned as a table but as a map of
+table, one for each track:
+
+\begin{lstlisting}[language=matlab]
+>> % What is the output class?
+>> class( edge_map )
+\end{lstlisting}
+\begin{verbatim}
+ans =
+
+    containers.Map
+\end{verbatim}
+\begin{lstlisting}[language=matlab]
+>> % The track names are used as keys in the map:
+>> track_names = edge_map.keys
+\end{lstlisting}
+\begin{verbatim}
+track_names = 
+
+    'AB'    'P1'    'PB1'    'PB2'
+\end{verbatim}
+\begin{lstlisting}[language=matlab]
+>> % How many tracks?
+>> n_tracks = numel( track_names )
+\end{lstlisting}
+\begin{verbatim}
+n_tracks =
+
+     4
+\end{verbatim}
+
+
+The values of the map are edge feature tables:
+
+\begin{lstlisting}[language=matlab]
+>> ab_edges = edge_map('AB');
+>> class( ab_edges )
+>> ab_edges(1:6, 1:5)
+\end{lstlisting}
+
+\begin{verbatim}
+ans =
+
+table
+
+
+ans = 
+
+    SPOT_SOURCE_ID    SPOT_TARGET_ID    DISPLACEMENT
+    ______________    ______________    ____________
+
+    3.8376e+05        3.8381e+05         3.5395     
+    3.8534e+05        3.8543e+05         0.7715     
+    2.2182e+05        2.0921e+05         1.3444     
+    3.5751e+05        3.5323e+05         1.0961     
+    2.1763e+05        2.2603e+05        0.49616     
+    2.6826e+05        2.9371e+05         0.3138     
+	
+	    EDGE_TIME    EDGE_X_LOCATION
+	    _________    _______________
+	
+	    119          23.568         
+	    143          32.317         
+	    109          13.347         
+	    167          34.781         
+	    105          38.949         
+	    121          22.476         
+\end{verbatim}
+
+Feature names and units are imported too:
+
+\begin{lstlisting}[language=matlab]
+>> [   ab_edges.Properties.VariableNames
+>>     ab_edges.Properties.VariableDescriptions
+>>     ab_edges.Properties.VariableUnits ]
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+  Columns 1 through 3
+
+    'SPOT_SOURCE_ID'    'SPOT_TARGET_ID'    'DISPLACEMENT'
+    'Source spot ID'    'Target spot ID'    'Displacement'
+    'no unit'           'no unit'           'µm'          
+
+  Columns 4 through 6
+
+    'EDGE_TIME'         'EDGE_X_LOCATION'      'EDGE_Y_LOCATION'  
+    'Time (mean)'       'X Location (mean)'    'Y Location (mean)'
+    'min'               'µm'                   'µm'               
+
+  Columns 7 through 9
+
+    'EDGE_Z_LOCATION'      'LINK_COST'    'VELOCITY'
+    'Z Location (mean)'    'Link cost'    'Velocity'
+    'µm'                   'no unit'      'µm/min'  
+\end{verbatim}
+
+The \texttt{trackmateEdges} has a similar syntax to the \texttt{trackmateSpots}
+function for optional input arguments. It is detailed in its help
+section.
+There are two key features in these edge tables: the \texttt{SPOT\_SOURCE\_ID} and
+the \texttt{SPOT\_TARGET\_ID}. They are the ones with which we can rebuild tracks
+in TrackMate:
+
+\begin{lstlisting}[language=matlab]
+>> track_spot_IDs = cell( n_tracks, 1 );
+>> for s = 1 : n_tracks
+>> 
+>>     track_name = track_names{s};
+>>     edge_table = edge_map( track_name );
+>>     track_spot_IDs{ s } = unique( [ 
+>>         edge_table.SPOT_SOURCE_ID 
+>>         edge_table.SPOT_TARGET_ID 
+>>         ] );
+>> 
+>> end
+\end{lstlisting}
+
+We now have the IDs of the spots that are in specified tracks. The
+problem is that these IDs are spot IDs, and we have a spot table in which
+the table row does not match the spot ID.
+This is where the second output argument of the \texttt{trackmateSpots} function
+is useful. \texttt{spot\_ID\_map} is a map that links spot IDs to row number in
+the spot table. It is used as follow:
+
+\begin{lstlisting}[language=matlab]
+>> % Retrieve the spot with ID:
+>> spot_ID = 3087;
+>> r = spot_ID_map( spot_ID )
+\end{lstlisting}
+
+\begin{verbatim}
+r =
+
+    12
+\end{verbatim}
+\begin{lstlisting}[language=matlab]
+>> spot_table( r, feature_subset )
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+     ID     name    ESTIMATED_DIAMETER    MEAN_INTENSITY
+    ____    ____    __________________    ______________
+
+    3087    'AB'    6.5642                1187.2        
+	
+	    POSITION_X    POSITION_Y    POSITION_Z
+	    __________    __________    __________
+	
+	    30.266        28.282        19        
+\end{verbatim}
+We can use it to retrieve the position of the spots in each track:
+
+\begin{lstlisting}[language=matlab]
+>> figure 
+>> hold on
+>> for s = 1 : n_tracks
+>>    
+>>     track_name = track_names{ s};
+>>     track_spot_ID = track_spot_IDs{ s };
+>>     
+>>     % To extract several values all at once, we have to play 
+>>     % with cell arrays and the value map method:
+>>     rows = cell2mat(spot_ID_map.values(num2cell(track_spot_ID)));    
+>> 
+>>     x = spot_table.POSITION_X( rows );
+>>     y = spot_table.POSITION_Y( rows );
+>>     z = spot_table.POSITION_Z( rows );
+>>     
+>>     % Plot the tracks by coloring spots.
+>>     plot3( x, y, z, '.', 'DisplayName', track_name)
+>>     
+>> end
+>> 
+>> xlabel( [ 'X (' units ')' ] )
+>> ylabel( [ 'Y (' units ')' ] )
+>> zlabel( [ 'Z (' units ')' ] )
+>> view(-15, 30)
+>> axis equal
+>> legend toggle
+\end{lstlisting}
+
+\screenshotA{MATLAB_CelegansColoredCloud.pdf}
+
+
+
+\subsection{Importing TrackMate data as a MATLAB graph.}
+%-------------------------------------------------------
+
+We are still missing one piece of information on the latest plot, which
+is the connectivity between spot. We can retrieve it from the edges we
+imported in the previous section, and accessing the \texttt{SPOT\_SOURCE\_ID} and
+the \texttt{SPOT\_TARGET\_ID} features. A better solution is to directly import
+the whole data as a MATLAB graph.
+
+The graph is the ultimate solution to represent complex tracks,
+manipulate and inspect them for finer analysis. A mathematical graph is a
+data structure made of vertices (in our case, spots) connected by edges
+(in our case links between spots). Graphs have numerous uses, which
+fostered the advent of graph theory and its applications.  With a graph
+data structure, you get the tools to iterate, partition, edit and
+investigate the data like you could never do with linear data structures.
+
+MATLAB offers two main graph classes, one for undirected graphs (the
+direction of edges do not matter) and directed graphs (edges are
+directed). We rely of course on the later, which is named \texttt{digraph}. It
+was introduced in MATLAB R2015b, so you need at least this version for
+what follows.
+
+The function \texttt{trackmateGraph} imports the whole TrackMate data as a
+MATLAB \texttt{digraph}. Doing so, spot and edge features are imported as well,
+so this function can replace the two preceding ones. It offers optional
+arguments to import a subset of features, as for \texttt{trackmate\-Spots} and
+\texttt{trackmateEdges}, plus an extra optinal flag for verbosity. They are all
+documented in the help section of the function.
+
+\begin{lstlisting}[language=matlab]
+>> % Import all features and be verbose during import.
+>> G = trackmateGraph( file_path, [], [], true );
+\end{lstlisting}
+
+\begin{verbatim}
+Importing spot table. Done in 20.6 s.
+Importing edge table. Done in 6.3 s.
+Building graph. Done in 0.2 s.
+\end{verbatim}
+
+The graph structure stores the spots and links features in tables:
+
+\begin{lstlisting}[language=matlab]
+>> % Spots.
+>> G.Nodes(1:5, feature_subset)
+\end{lstlisting}
+\begin{verbatim}
+ans = 
+
+     ID      name     ESTIMATED_DIAMETER    MEAN_INTENSITY
+    _____    _____    __________________    ______________
+
+        0    'AB'     4.5477                1129.4        
+        1    'PB1'    6.3325                2418.9        
+        2    'P1'     2.7192                1142.6        
+        3    'PB2'    4.5137                671.54        
+    47360    'PB1'    4.5293                757.12        
+
+        POSITION_X        POSITION_Y        POSITION_Z
+        __________        __________        __________
+
+        34.136                30.564                21                
+        10.221                 11.61                16                
+        43.266                32.549                20                
+        9.9233                27.587                22                
+         10.32                11.511                16                
+\end{verbatim}
+
+\begin{lstlisting}[language=matlab]
+>> % Edges.
+>> G.Edges(1:6, 1:5)
+\end{lstlisting}
+\begin{verbatim}
+ans = 
+
+    EndNodes    SPOT_SOURCE_ID    SPOT_TARGET_ID
+    ________    ______________    ______________
+
+    1     8         0             47363         
+    2     5         1             47360         
+    3     7         2             47362         
+    4     6         3             47361         
+    5     9     47360              3084         
+    6    10     47361              3085         
+    
+        DISPLACEMENT        EDGE_TIME
+        ____________        _________
+
+         2.2946                 1                
+        0.14034                 1                
+         2.8798                 1                
+         18.875                 1                
+        0.19847                 3                
+         6.8934                 3            
+\end{verbatim}
+These tables have the same shape that the tables imported by
+\texttt{trackmateSpots} and \texttt{trackmateEdges}, except for the edge table, whose
+first column \texttt{EndNodes} is a $N \times 2$ array that stores the source and
+target indices of nodes in the spot table. Careful: these indices are
+\textbf{row numbers} in the spot table.
+
+\begin{lstlisting}[language=matlab]
+>> % Access one edge:
+>> i_edge = 28; % 28th edge from AB to AB.p
+>> edge = G.Edges(i_edge, 1:5);
+>> source = G.Nodes( edge.EndNodes(1), feature_subset )
+\end{lstlisting}
+\begin{verbatim}
+source = 
+
+     ID      name    ESTIMATED_DIAMETER    MEAN_INTENSITY
+    _____    ____    __________________    ______________
+
+    27303    'AB'    4.7838                1457.9        
+
+        POSITION_X        POSITION_Y        POSITION_Z
+        __________        __________        __________
+
+        26.396                25.801                21                
+\end{verbatim}
+
+
+\begin{lstlisting}[language=matlab]
+>> target = G.Nodes( edge.EndNodes(2), feature_subset )
+\end{lstlisting}
+\begin{verbatim}
+target = 
+
+     ID       name     ESTIMATED_DIAMETER    MEAN_INTENSITY
+    _____    ______    __________________    ______________
+
+    31404    'AB.p'    4.5622                834.89        
+    
+        POSITION_X        POSITION_Y        POSITION_Z
+        __________        __________        __________
+
+        27.488            29.737            23                
+\end{verbatim}
+
+
+We can now rely on MATLAB facilities to lay out the graph. For instance
+you can create a graph display that resembles TrackScheme using the
+\texttt{layered} option of the the plot function, and setting the nodes Y
+coordinates to the spot frame:
+
+\begin{lstlisting}[language=matlab]
+>> figure
+>> hp = plot(G, 'layout', 'layered');
+>> set(hp, 'YData', G.Nodes.FRAME);
+>> set(gca, 'YDir', 'reverse', 'XColor', 'none')
+>> ylabel('Time point')
+>> box off
+\end{lstlisting}
+
+\screenshotA{MATLAB_Tree_1.pdf}
+
+As said above, there is a rich collection of tools offered to manipulate
+a graph. Here is a few examples. For instance, suppose we want to color
+on this graph all the descendant of the MS cell.
+
+\begin{lstlisting}[language=matlab]
+>> % Find the first occurrence of MS using spot names.
+>> index_MS = find( strcmp( G.Nodes.name, 'MS'), 1 );
+>> 
+>> % Use depth first iterator to have all its descendant. This will
+>> % work since our graph is a directed graph. The following 
+>> % instruction generates a table with nodes indices (when they are 
+>> % met for the first time) and edge indices (when they are 
+>> % traversed).
+>> t = dfsearch(G, index_MS, { 'discovernode', 'edgetonew' } );
+>>
+>> % We have to prune NaNs if we want a separate list of nodes and 
+>> % edges.
+>> v = t.Node;
+>> v = v( ~isnan(v) );
+>> e = t.Edge;
+>> e = e( ~isnan(e(:,1)), : );
+>>
+>> % Highlight them in the plot:
+>> % Nodes
+>> col1 = [ 0.8 0.2 0.1 ];
+>> highlight( hp, v, 'NodeColor', col1)
+>> % Edges
+>> highlight( hp, e(:,1), e(:,2), 'EdgeColor', col1)
+\end{lstlisting}
+
+\screenshotA{MATLAB_Tree_2.pdf}
+
+Now let's find a path in the graph, from AB to AB.araappp
+
+\begin{lstlisting}[language=matlab]
+>> index_AB1 = find( strcmp( G.Nodes.name, 'AB'), 1 );
+>> index_AB2 = find( strcmp( G.Nodes.name, 'AB.araappp'), 1 );
+>> 
+>> path_AB = shortestpath( G, index_AB1, index_AB2 );
+>> col2 = [ 0.1 0.5 0.2 ];
+>> % The highlight function can color edges of a path automatically.
+>> highlight( hp, path_AB,  'NodeColor', col2, 'EdgeColor', col2 )
+\end{lstlisting}
+
+\screenshotA{MATLAB_Tree_3.pdf}
+
+We can also layout the graph using the spot coordinates for the nodes in
+the plot. Unfortunately, the plot function of MATLAB allows for
+specifying on the X and Y coordinates. If we want to reproduce the tracks
+in 3D with cell fate, we have to generate our own plotting function. Here
+is a procedure adapted from the work of John Gilbert:
+
+\begin{lstlisting}[language=matlab]
+>> % Get X, Y, Z coordinates.
+>> x = G.Nodes.POSITION_X;
+>> y = G.Nodes.POSITION_Y;
+>> z = G.Nodes.POSITION_Z;
+>> 
+>> % Get links source and target.
+>> s = G.Edges.EndNodes( : , 1 );
+>> t = G.Edges.EndNodes( : , 2 );
+>> 
+>> % We intercalate NaNs between node pairs to have a line for
+>> % each edge.
+>> n_nodes = numel(s);
+>> X = [ x(s) x(t) NaN( n_nodes, 1) ]';
+>> Y = [ y(s) y(t) NaN( n_nodes, 1) ]';
+>> Z = [ z(s) z(t) NaN( n_nodes, 1) ]';
+>> X = X(:);
+>> Y = Y(:);
+>> Z = Z(:);
+>> 
+>> figure
+>> plot3( X, Y, Z, '-', 'Color', [ 0.5 0.5 0.5 ] )
+>> xlabel( [ 'X (' units ')' ] )
+>> ylabel( [ 'Y (' units ')' ] )
+>> zlabel( [ 'Z (' units ')' ] )
+>> view(-150, 30)
+>> axis equal
+\end{lstlisting}
+
+\screenshotA{MATLAB_Celegans_Tracks_1.pdf}
+
+We can also reuse the edges of the MS descendant calculated above to
+repaint these descendants in another color on this 3D plot:
+
+\begin{lstlisting}[language=matlab]
+>> % The variable e stores MS descendants edges.
+>> s = e(:,1);
+>> t = e(:,2);
+>> 
+>> % Same procedure otherwise:
+>> n_nodes = numel(s);
+>> Xms = [ x(s) x(t) NaN( n_nodes, 1) ]';
+>> Yms = [ y(s) y(t) NaN( n_nodes, 1) ]';
+>> Zms = [ z(s) z(t) NaN( n_nodes, 1) ]';
+>> Xms = Xms(:);
+>> Yms = Yms(:);
+>> Zms = Zms(:);
+>> 
+>> hold on
+>> plot3( Xms, Yms, Zms, '-', 'Color', col1, 'LineWidth', 2)
+\end{lstlisting}
+
+\screenshotA{MATLAB_Celegans_Tracks_2.pdf}
+
+Now if we want to color a path, we have to access the edges of this
+path, which we cannot do with the simple \texttt{shortestpath} function. We have
+to rely on \texttt{shortestpathtree}, which returns a \texttt{digraph} with the
+relevant edges only:
+
+\begin{lstlisting}[language=matlab]
+>> path_AB2 = shortestpathtree( G, index_AB1, index_AB2 );
+>> 
+>> % We get edges from the created digraph:
+>> s = path_AB2.Edges.EndNodes(:,1);
+>> t = path_AB2.Edges.EndNodes(:,2);
+>> 
+>> % Same procedure otherwise:
+>> n_nodes = numel(s);
+>> Xab = [ x(s) x(t) NaN( n_nodes, 1) ]';
+>> Yab = [ y(s) y(t) NaN( n_nodes, 1) ]';
+>> Zab = [ z(s) z(t) NaN( n_nodes, 1) ]';
+>> Xab = Xab(:);
+>> Yab = Yab(:);
+>> Zab = Zab(:);
+>> 
+>> hold on
+>> plot3( Xab, Yab, Zab, 'o-', 'Color', col2, 'LineWidth', 2, ...
+>>     'MarkerFaceColor', 'w')
+\end{lstlisting}
+
+\screenshotA{MATLAB_Celegans_Tracks_3.pdf}
+
+
+
+\subsection{Other MATLAB functions for TrackMate.}
+%-------------------------------------------------
+
+The three sections above presented the core of interoperability between
+TrackMate and MATLAB. The main function is \texttt{trackmateGraph} but
+\texttt{trackmateSpots} and \texttt{trackmate\-Edges} can be used advantageously when the
+whole graph is not required for analysis. The logic used in these
+three functions can be reproduced and translated to languages other than
+MATLAB.
+
+There are two supplemental functions that do not import the track data
+but are useful to probe the metadata stored in a TrackMate file.
+\texttt{trackmateImageCalibration} is able to read the physical calibration of
+the image on which TrackMate operated:
+
+\begin{lstlisting}[language=matlab]
+>> cal = trackmateImageCalibration( file_path );
+>> cal.x
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+    start: 0
+      end: 348
+     size: 349
+    value: 0.1985
+    units: 'µm'
+\end{verbatim}
+
+
+The function \texttt{trackmateFeatureDeclarations} is used to probe what
+features are declared in the TrackMate file:
+
+\begin{lstlisting}[language=matlab]
+>> [ spot_fd, edge_fd, track_df ] = ...
+>>        trackmateFeatureDeclarations( file_path );
+\end{lstlisting}
+
+They are returned as 3 maps, one for spot, edge and track feature
+declarations. These maps use the feature names as keys:
+
+\begin{lstlisting}[language=matlab]
+>> edge_fd('VELOCITY')
+\end{lstlisting}
+
+\begin{verbatim}
+ans = 
+
+          key: 'VELOCITY'
+         name: 'Velocity'
+    shortName: 'V'
+    dimension: 'VELOCITY'
+        isInt: 0
+        units: 'µm/min'
+\end{verbatim}
+
+
+
+\subsection{Application examples and links.}
+%--------------------------------------------
+
+There are some specialized tools in MATLAB that can exploit TrackMate results. 
+For instance, here is a MATLAB class that performs \otherlink{http://www.mathworks.com/matlabcentral/fileexchange/40692-mean-square-displacement-analysis-of-particles-trajectories mean-square displacement}{analysis}.
+It is hopefully well documented in this \otherlink{http://www.mathworks.com/matlabcentral/fileexchange/40692-mean-square-displacement-analysis-of-particles-trajectories/content/msdanalyzer/MSDTuto.html}{MATLAB  tutorial}.
+
+<wiki>
+[[Category:Tracking]]
+[[Category:Matlab]]
+</wiki>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \section{Numerical features.}
 %----------------------------
 
@@ -804,6 +1804,7 @@ Numerical features are automatically kept in sync with the annotation. As soon a
 
 The next paragraphs list and document the current features in MaMuT.
 
+\pagebreak
 
 \subsection{Spot features.}
 %--------------------------
